@@ -1,0 +1,58 @@
+
+-----------------------------------------------------------
+* NOTE: This is demo app to show *some* nDPI features.
+* In this demo we have implemented only some basic features
+* just to show you what you can do with the library. Feel 
+* free to extend it and send us the patches for inclusion
+------------------------------------------------------------
+
+Using nDPI (5.0.0) [1 thread(s)]
+Using libgcrypt version 1.8.6internal
+Reading packets from pcap file data/2026-02-19_modbus_mbpoll/modbus_mbpoll.pcap...
+Running thread 0...
+
+nDPI Memory statistics:
+	nDPI Memory (once):      3.02 KB      
+	Flow Memory (per flow):  1.18 KB      
+	Total memory allocated:  8.83 MB      
+	Setup Time:              28 msec
+	Packet Processing Time:  0 msec
+
+Traffic statistics:
+	Ethernet bytes:        8501          (includes ethernet CRC/IFC/trailer)
+	Discarded bytes:       0            
+	IP packets:            84            of 84 packets total
+	IP bytes:              6485          (avg pkt size 77 bytes)
+	Unique flows:          2            
+	TCP Packets:           84           
+	UDP Packets:           0            
+	VLAN Packets:          0            
+	MPLS Packets:          0            
+	PPPoE Packets:         0            
+	Fragmented Packets:    0            
+	Max Packet size:       57           
+	Packet Len < 64:       84           
+	Packet Len 64-128:     0            
+	Packet Len 128-256:    0            
+	Packet Len 256-1024:   0            
+	Packet Len 1024-1500:  0            
+	Packet Len > 1500:     0            
+	nDPI throughput:       220.47 K pps / 170.23 Mb/sec
+	Analysis begin:        18/Nov/2025 17:08:17
+	Analysis end:          18/Nov/2025 17:08:43
+	Traffic throughput:    3.19 pps / 2.53 Kb/sec
+	Traffic duration:      26.300 sec
+	DPI Packets (TCP):     5             (2.50 pkts/flow)
+	Confidence: DPI        2             (flows)
+
+
+Detected protocols:
+	Modbus               packets: 84            bytes: 6485          flows: 2            
+
+
+Protocol statistics:
+	Acceptable           packets: 84            bytes: 6485          flows: 2            
+
+
+Category statistics:
+	IoT-Scada            packets: 84            bytes: 6485          flows: 2            

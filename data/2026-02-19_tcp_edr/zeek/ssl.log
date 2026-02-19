@@ -1,2 +1,0 @@
-{"ts":1770356150.593761,"uid":"C4xXty44utsN71aASd","id.orig_h":"192.168.10.199","id.orig_p":50874,"id.resp_h":"192.168.212.4","id.resp_p":443,"version":"TLSv13","cipher":"TLS_AES_256_GCM_SHA384","curve":"x25519","resumed":false,"established":true,"ssl_history":"CsiI"}
-{"ts":1770356150.61449,"uid":"ChYTod36red5shzvn4","id.orig_h":"192.168.10.199","id.orig_p":50886,"id.resp_h":"192.168.212.4","id.resp_p":443,"version":"TLSv13","cipher":"TLS_AES_256_GCM_SHA384","curve":"x25519","resumed":false,"established":true,"ssl_history":"CsiI"}
