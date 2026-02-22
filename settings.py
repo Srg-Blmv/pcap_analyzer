@@ -9,13 +9,32 @@ import time
 LOG_DIR = Path("data")
 
 st.set_page_config(layout="wide")
+left, middle, right = st.columns(3)
 
-if st.button("clean data"):
-    os.system(f"rm -rf {LOG_DIR}/*")
-    st.success('data cleaned')
+
+with st.container(horizontal=True):
+
+    if st.button("clean", help="clean data folder"):
+        os.system(f"rm -rf {LOG_DIR}/*")
+        st.toast('data cleaned')
+
+    if st.button("update", help="update ET rules and GeoLite.mmdb "):
+        with st.spinner("Download updates", show_time=True):
+            os.system(f" wget https://rules.emergingthreats.net/open/suricata-7.0.3/emerging-all.rules -O ./suricata_conf/rules/emerging-all.rules")
+            st.toast('ET rules update')
+            os.system(f"wget https://git.io/GeoLite2-City.mmdb -O ./db/GeoLite2-City.mmdb")
+            st.toast('City.mmdb')
+
+
+
+
+
 
 uploaded_file = st.file_uploader(
     "Choose a file", type=["pcapng", "pcap"], max_upload_size=10)
+
+
+
 
 if uploaded_file is not None:
     try:
