@@ -53,6 +53,8 @@ def suricata(file):
 def zeek(folder):
     # ZEEK
     result = []
+    uniq_ip = []
+    uniq_dns = []
     for file in folder.iterdir():
         if file.is_file():
             data = []
@@ -67,6 +69,7 @@ def zeek(folder):
 
             if file.name == "dns.log":
                 uniq_dns  = df.loc[df['qtype_name'] != 'NIMLOC', ['query', 'qtype_name']]
+
 
             result.append({"file_name": file.name, "df": df})
             # with st.expander(f"{file.name} ({len(df)})", expanded=False):
@@ -188,7 +191,7 @@ if select_folder != None:
     # DNS 
     st.caption("DNS")
     st.dataframe(dns)
-    
+
     # Public IP
     st.caption("Public Ip")
     df_public_ip = search_public_ip(ip_addrs)
