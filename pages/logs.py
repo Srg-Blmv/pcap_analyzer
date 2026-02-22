@@ -64,14 +64,14 @@ def zeek(folder):
             # Если conn.log то считаем саммару
             if file.name == "conn.log":
                 uniq_ip = pd.unique(df[["id.orig_h", "id.resp_h"]].values.ravel())
-                # uniq_dst_port = pd.unique(df[["id.resp_p"]].values.ravel())
-                # rint("uniq_ip: ", uniq_ip)
-                # print("uniq_dst_port: ", uniq_dst_port)
+
+            if file.name == "dns.log":
+                uniq_dns  = df.loc[df['qtype_name'] != 'NIMLOC', ['query', 'qtype_name']]
 
             result.append({"file_name": file.name, "df": df})
             # with st.expander(f"{file.name} ({len(df)})", expanded=False):
             #     st.dataframe(df, height=700)
-    return result, uniq_ip  # , uniq_dst_port
+    return result, uniq_ip  , uniq_dns
 
 
 def ndpi(file):
@@ -102,8 +102,7 @@ def ndpi(file):
     return lines, df_protocols
 
 
-def search_public_ip(ip_addrf
-):
+def search_public_ip(ip_addrf):
     ### Search public IP
     public_ip = []
     for ip in ip_addrs:
@@ -159,7 +158,7 @@ if select_folder != None:
 
     # get data zeek
     folder_zeek = Path(f"{LOG_DIR}/{select_folder}/zeek/")
-    zeek_logs, ip_addrs = zeek(folder_zeek)
+    zeek_logs, ip_addrs , dns = zeek(folder_zeek)
 
     # ndpi
     ndpi_file = Path(f"{LOG_DIR}/{select_folder}/ndpi/ndpi_summary.log")
@@ -186,6 +185,10 @@ if select_folder != None:
     st.caption("DPI protocols")
     st.bar_chart(protocols, x="protocol", y="packets", horizontal=True)
 
+    # DNS 
+    st.caption("DNS")
+    st.dataframe(dns)
+    
     # Public IP
     st.caption("Public Ip")
     df_public_ip = search_public_ip(ip_addrs)

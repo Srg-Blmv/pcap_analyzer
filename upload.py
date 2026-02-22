@@ -1,15 +1,11 @@
-import pandas as pd
 import streamlit as st
-import json
 import os
 from pathlib import Path
 from datetime import datetime
-import time
 
 LOG_DIR = Path("data")
 
 st.set_page_config(layout="wide")
-left, middle, right = st.columns(3)
 
 
 with st.container(horizontal=True):
