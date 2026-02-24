@@ -27,7 +27,7 @@ with st.container(horizontal=True):
 
 
 uploaded_file = st.file_uploader(
-    "Choose a file", type=["pcapng", "pcap"], max_upload_size=10)
+    "Choose a file", type=["pcapng", "pcap"], max_upload_size=100)
 
 
 
@@ -47,8 +47,10 @@ if uploaded_file is not None:
         # suricata
         os.mkdir(f'{path_dir}/suricata')
         with st.spinner("Suricata run, Wait for it...", show_time=True):
-            os.system(f"docker run  --rm -v {os.path.abspath('data')}:/tmp  -v {os.path.abspath('suricata_conf')}:/home/suricata jasonish/suricata:7.0.11 \
-                suricata -c /home/suricata/conf/suricata.yaml -s /home/suricata/rules/ -k none -r /tmp/{name_pcap_dir}/{file_name} --runmode=autofp -l /tmp/{name_pcap_dir}/suricata/ ")
+            # os.system(f"docker run  --rm -v {os.path.abspath('data')}:/tmp  -v {os.path.abspath('suricata_conf')}:/home/suricata jasonish/suricata:7.0.11 \
+            #     suricata -c /home/suricata/conf/suricata.yaml -s /home/suricata/rules/ -k none -r /tmp/{name_pcap_dir}/{file_name} --runmode=autofp -l /tmp/{name_pcap_dir}/suricata/ ")  
+            os.system(f"docker exec  suricata  suricatasc -c  'pcap-file /tmp/{name_pcap_dir}/{file_name} /tmp/{name_pcap_dir}/suricata/'   /var/run/suricata/suricata-command.socket")
+         
         st.success('suricata done')
 
         # zeek

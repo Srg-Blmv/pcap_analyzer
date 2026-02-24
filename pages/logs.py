@@ -15,6 +15,9 @@ folder = os.listdir(LOG_DIR)
 def suricata(file):
     # Читаем eve.json построчно
     data = []
+    df_alert = []
+    severity_counts = []
+
     with open(file) as f:
         for line in f:
             data.append(json.loads(line))
