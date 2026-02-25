@@ -7,9 +7,9 @@
 
 ``` 
 cd pcap_analyzer
+mkdir data
 docker run -d  --name suricata -v ./data:/tmp  -v ./suricata_conf/:/home/suricata  jasonish/suricata:7.0.11 suricata -c /home/suricata/conf/suricata.yaml -s /home/suricata/rules/ --unix-socket
 docker pull zeek/zeek:8.0 
-mkdir data
 pip3 install -r requirements.txt
 streamlit run upload.py
 ```
