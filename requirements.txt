@@ -1,4 +1,5 @@
 geoip2==5.2.0
 streamlit==1.54.0
 pandas==2.3.3
-
+graphviz=0.21
+scapy=2.7.0

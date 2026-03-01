@@ -12,6 +12,9 @@ LOG_DIR = Path("data")
 folder = os.listdir(LOG_DIR)
 
 
+
+
+
 def suricata(file):
     # Читаем eve.json построчно
     data = []
@@ -66,7 +69,7 @@ def zeek(folder):
                     data.append(json.loads(line))
 
             df = pd.json_normalize(data)
-            # Если conn.log то считаем саммару
+            # Если conn.log то считаем саммари
             if file.name == "conn.log":
                 uniq_ip = pd.unique(df[["id.orig_h", "id.resp_h"]].values.ravel())
 
@@ -156,11 +159,6 @@ st.set_page_config(layout="wide")
 
 
 if select_folder != None:
-    # get data suricata
-    suricata_file = f"{LOG_DIR}/{select_folder}/suricata/eve.json"
-    all_suricata_events, only_suricata_alert, suricata_alert_count = suricata(
-        suricata_file
-    )
 
     # get data zeek
     folder_zeek = Path(f"{LOG_DIR}/{select_folder}/zeek/")
@@ -173,19 +171,31 @@ if select_folder != None:
     # SUMMARY
     ######################################################
 
-    ### Suricata
-    suricata_alert_count = suricata_alert_count.to_frame().reset_index()
-    # переименовал колонку потому что когда в название точка он не строил
-    suricata_alert_count = suricata_alert_count.rename(
-        columns={"alert.severity": "severity"}
-    )
+   # get data suricata
+    suricata_file = f"{LOG_DIR}/{select_folder}/suricata/eve.json"
 
-    st.header("Summary")
-    st.html("<hr></hr>")
-    st.caption("Suricata alerts")
-    st.bar_chart(
-        suricata_alert_count, x="severity", y="count", horizontal=True, sort=False
-    )
+    eve_file_suricata = Path(suricata_file).is_file()
+    
+
+    if eve_file_suricata:
+        all_suricata_events, only_suricata_alert, suricata_alert_count = suricata(
+            suricata_file
+        )
+
+
+        ### Suricata
+        suricata_alert_count = suricata_alert_count.to_frame().reset_index()
+        # переименовал колонку потому что когда в название точка он не строил
+        suricata_alert_count = suricata_alert_count.rename(
+            columns={"alert.severity": "severity"}
+        )
+
+        st.header("Summary")
+        st.html("<hr></hr>")
+        st.caption("Suricata alerts")
+        st.bar_chart(
+            suricata_alert_count, x="severity", y="count", horizontal=True, sort=False
+        )
 
     # DPI Protocols
     st.caption("DPI protocols")
@@ -205,16 +215,17 @@ if select_folder != None:
     st.header("Logs")
     st.html("<hr></hr>")
 
-    st.subheader("Suricata")
+    if eve_file_suricata:
+        st.subheader("Suricata")
 
-    with st.expander("alert only", expanded=False):
-        st.dataframe(
-            only_suricata_alert,
-            height=700,
-        )
+        with st.expander("alert only", expanded=False):
+            st.dataframe(
+                only_suricata_alert,
+                height=700,
+            )
 
-    with st.expander("all event", expanded=False):
-        st.dataframe(all_suricata_events, height=700)
+        with st.expander("all event", expanded=False):
+            st.dataframe(all_suricata_events, height=700)
 
     # ZEEK
     st.subheader("Zeek")
