@@ -14,13 +14,15 @@ with st.container(horizontal=True):
         os.system(f"rm -rf {LOG_DIR}/*")
         st.toast('data cleaned')
 
-    if st.button("update", help="update ET rules and GeoLite.mmdb "):
-        with st.spinner("Download updates", show_time=True):
-            os.system(f" wget https://rules.emergingthreats.net/open/suricata-7.0.3/emerging-all.rules -O ./suricata_conf/rules/emerging-all.rules")
-            st.toast('ET rules update')
+    if st.button("update", help="update ET rules, GeoLite.mmdb, zeek IOC "):
+        with st.spinner("suricata updates", show_time=True):
+            #os.system(f" wget https://rules.emergingthreats.net/open/suricata-7.0.3/emerging-all.rules -O ./suricata_conf/rules/emerging-all.rules")
+            os.system("docker exec -it suricata suricata-update")
+            st.toast('suricata rules update')
             os.system(f"wget https://git.io/GeoLite2-City.mmdb -O ./db/GeoLite2-City.mmdb")
             st.toast('City.mmdb')
-
+            os.system(f"git -C ./zeek_conf/Zeek-Intelligence-Feeds pull")
+            st.toast('zeek ioc')
 
 
 
@@ -31,6 +33,9 @@ uploaded_file = st.file_uploader(
 
 
 
+#if 'sel_folder' not in st.session_state:
+#    st.session_state.sel_folder = ""
+
 
 if uploaded_file is not None:
     try:
@@ -38,6 +43,7 @@ if uploaded_file is not None:
         name_pcap_dir = f'{datetime.now().strftime("%Y-%m-%d")}_{Path(file_name).stem}'
         path_dir = f'{LOG_DIR}/{name_pcap_dir}'
         full_path_file = f'{path_dir}/{file_name}'
+        st.session_state.sel_folder = name_pcap_dir
         os.mkdir(path_dir)
 
         with open(full_path_file, "wb") as f:
@@ -57,7 +63,7 @@ if uploaded_file is not None:
         os.mkdir(f'{path_dir}/zeek')
         with st.spinner("Zeek run, Wait for it...", show_time=True):
             os.system(
-                f'docker run --rm -v {os.path.abspath("data")}:/pcap zeek/zeek:8.0 bash -c "cd /pcap/{name_pcap_dir}/zeek && zeek -C -r ../{file_name} LogAscii::use_json=T"')
+                f'docker run --rm -v {os.path.abspath("data")}:/pcap  -v {os.path.abspath("zeek_conf")}:/opt   zeek/zeek:8.0  bash -c "cd /pcap/{name_pcap_dir}/zeek && zeek -C -r ../{file_name}  /opt/zeek.intel  LogAscii::use_json=T"')
         st.success('zeek done')
 
         

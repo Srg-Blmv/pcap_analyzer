@@ -153,8 +153,10 @@ def search_public_ip(ip_addrf):
 
 
 ##### streamlit
-
+# if 'sel_folder' not in st.session_state:
+#     continue
 select_folder = st.selectbox("select folder", folder)
+#st.session_state.sel_folder  = select_folder
 st.set_page_config(layout="wide")
 
 
