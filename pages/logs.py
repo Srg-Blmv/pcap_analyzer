@@ -74,7 +74,8 @@ def zeek(folder):
                 uniq_ip = pd.unique(df[["id.orig_h", "id.resp_h"]].values.ravel())
 
             if file.name == "dns.log":
-                uniq_dns  = df.loc[df['qtype_name'] != 'NIMLOC', ['query', 'qtype_name']]
+                #uniq_dns  = df.loc[df['qtype_name'] != 'NIMLOC', ['query', 'qtype_name']]
+                uniq_dns  = df[['query','qtype_name']].drop_duplicates()
 
 
             result.append({"file_name": file.name, "df": df})
@@ -204,7 +205,7 @@ if select_folder != None:
     st.bar_chart(protocols, x="protocol", y="packets", horizontal=True)
 
     # DNS 
-    st.caption("DNS")
+    st.caption("Domain Name")
     st.dataframe(dns)
 
     # Public IP
