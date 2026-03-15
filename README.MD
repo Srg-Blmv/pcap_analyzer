@@ -6,8 +6,7 @@
 - nDPI
 
 ### Network Map Visualizer
-- TCP connections: Only packets with SYN flags are considered (connection initiation)
-- UDP connections: All UDP traffic is mappe
+- zeek conn.log
 
 
 ### Installation
