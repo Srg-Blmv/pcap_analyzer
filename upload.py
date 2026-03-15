@@ -21,7 +21,10 @@ with st.container(horizontal=True):
             st.toast('suricata rules update')
             os.system(f"wget https://git.io/GeoLite2-City.mmdb -O ./db/GeoLite2-City.mmdb")
             st.toast('City.mmdb')
-            os.system(f"git -C ./zeek_conf/Zeek-Intelligence-Feeds pull")
+            #os.system(f"git -C ./zeek_conf/Zeek-Intelligence-Feeds pull")
+            os.system(f"cd ./zeek_conf/Zeek-Intelligence-Feeds && git fetch origin master && git reset --hard FETCH_HEAD && git clean -df")
+            os.system(f"cd ./zeek_conf/Zeek-Intelligence-Feeds && sed -i 's|/usr/local/zeek/share/zeek/site/|/opt/|g' main.zeek")
+
             st.toast('zeek ioc')
 
 
@@ -63,7 +66,7 @@ if uploaded_file is not None:
         os.mkdir(f'{path_dir}/zeek')
         with st.spinner("Zeek run, Wait for it...", show_time=True):
             os.system(
-                f'docker run --rm -v {os.path.abspath("data")}:/pcap  -v {os.path.abspath("zeek_conf")}:/opt   zeek/zeek:8.0  bash -c "cd /pcap/{name_pcap_dir}/zeek && zeek -C -r ../{file_name}  /opt/zeek.intel  LogAscii::use_json=T"')
+                f'docker run --rm -v {os.path.abspath("data")}:/pcap  -v {os.path.abspath("zeek_conf")}:/opt   zeek/zeek:8.0  bash -c "cd /pcap/{name_pcap_dir}/zeek && zeek -C -r ../{file_name}  /opt/Zeek-Intelligence-Feeds/main.zeek  LogAscii::use_json=T"')
         st.success('zeek done')
 
         

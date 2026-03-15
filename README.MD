@@ -19,6 +19,8 @@ docker run -d --name suricata -v ./data:/tmp -v ./suricata_conf/:/home/suricata 
 docker pull zeek/zeek:8.0 
 pip3 install -r requirements.txt
 cd zeek_conf  && git clone https://github.com/CriticalPathSecurity/Zeek-Intelligence-Feeds
+cd Zeek-Intelligence-Feeds && sed -i 's|/usr/local/zeek/share/zeek/site/|/opt/|g' main.zeek
+
 streamlit run upload.py
 
 # enable source rules
