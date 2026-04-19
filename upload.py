@@ -15,7 +15,7 @@ with st.container(horizontal=True):
         st.toast('data cleaned')
 
     if st.button("update", help="update ET rules, GeoLite.mmdb, zeek IOC "):
-        with st.spinner("suricata updates", show_time=True):
+        with st.spinner("updates", show_time=True):
             #os.system(f" wget https://rules.emergingthreats.net/open/suricata-7.0.3/emerging-all.rules -O ./suricata_conf/rules/emerging-all.rules")
             os.system("docker exec -it suricata suricata-update")
             st.toast('suricata rules update')
@@ -66,7 +66,8 @@ if uploaded_file is not None:
         os.mkdir(f'{path_dir}/zeek')
         with st.spinner("Zeek run, Wait for it...", show_time=True):
             os.system(
-                f'docker run --rm -v {os.path.abspath("data")}:/pcap  -v {os.path.abspath("zeek_conf")}:/opt   zeek/zeek:8.0  bash -c "cd /pcap/{name_pcap_dir}/zeek && zeek -C -r ../{file_name}  /opt/Zeek-Intelligence-Feeds/main.zeek  LogAscii::use_json=T"')
+                #f'docker run --rm -v {os.path.abspath("data")}:/pcap  -v {os.path.abspath("zeek_conf")}:/opt   zeek/zeek:8.0  bash -c "cd /pcap/{name_pcap_dir}/zeek && zeek -C -r ../{file_name}  /opt/Zeek-Intelligence-Feeds/main.zeek  LogAscii::use_json=T"')
+                f'docker run --rm -v {os.path.abspath("data")}:/pcap  -v {os.path.abspath("zeek_conf")}:/opt   zeek/zeek:8.0  bash -c "cd /pcap/{name_pcap_dir}/zeek && zeek -C -r ../{file_name}  /opt/Zeek-Intelligence-Feeds/__load__.zeek  LogAscii::use_json=T"')
         st.success('zeek done')
 
         
