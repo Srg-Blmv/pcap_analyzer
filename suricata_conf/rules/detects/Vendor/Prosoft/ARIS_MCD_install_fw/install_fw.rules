@@ -1,0 +1,2 @@
+alert udp any any -> any 5000 (sid:70000027; msg:"mcd_install_fw"; classtype:misc-activity; content:"install_fw("; offset: 0; depth: 11; content:","; distance:1; within:2;content:","; distance:1;  content:","; distance:1; content:")"; distance:1;)
+alert udp any 5000 -> any any (sid:70000028; msg:"mcd_installation_started"; classtype:misc-attack; content:"installation_started("; offset: 0; depth: 21;)

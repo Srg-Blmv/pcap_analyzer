@@ -1,0 +1,1 @@
+alert tcp any any -> $HOME_NET 135  (msg:"DCE RPC Interface Buffer Overflow Exploit"; content:"|00 05 00 01 00 00 00 00 00 00 00 00|"; content:"|00 5C 00 5C|"; content:!"|5C|"; within:32; flow:to_server,established;classtype: shellcode-detect; reference:bugtraq,8205; sid:40000011; rev:1; )

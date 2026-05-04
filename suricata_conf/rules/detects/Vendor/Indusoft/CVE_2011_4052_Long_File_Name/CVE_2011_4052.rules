@@ -1,0 +1,1 @@
+alert tcp any any -> any 4322 (msg:"CVE-2011-4052, buffer overflow in CEServer.exe"; content:"|15|"; depth:1; dsize:>315; classtype:shellcode-detect; sid:30000001;)

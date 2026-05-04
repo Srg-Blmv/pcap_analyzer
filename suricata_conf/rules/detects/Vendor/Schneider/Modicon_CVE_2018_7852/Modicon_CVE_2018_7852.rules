@@ -1,0 +1,1 @@
+alert tcp any any -> any 502 (msg:"CVE-2018-7852 Modicon. Detection of a Denial of Service Attack"; flow: established, to_server; content: "|00 00|"; offset:2; content: "|5a|"; offset:7; content: "|00 6d 00 80 00 00 ff 00 00 00 ff 00 00 00 ff 00 00 00|"; reference:url,nvd.nist.gov/vuln/detail/cve-2018-7852; classtype:denial-of-service; sid:90000022; rev:1;)

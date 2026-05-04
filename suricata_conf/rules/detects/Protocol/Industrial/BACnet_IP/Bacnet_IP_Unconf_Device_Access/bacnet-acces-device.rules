@@ -1,0 +1,2 @@
+alert udp any any -> any [47808:47823] (msg:"Unconfigured device access attempt over Bacnet protocol with read-property service"; classtype:attempted-recon; sid:30000050;  content:"|81|"; offset:0; depth:1; content:"|0c 0c 02 3f ff ff|"; distance:8;)
+alert udp any any -> any [47808:47823] (msg:"Unconfigured device access attempt over Bacnet protocol with read-property-multiple service"; classtype:attempted-recon; sid:30000051;  content:"|81|"; offset:0; depth:1; content:"|0e 0c 02 3f ff ff|"; distance:8;)

@@ -1,0 +1,1 @@
+alert udp any any -> any 9992 (msg: "ABB Freelance Controller Reboot"; content: "|20 00 20 00 01 00 20 00 02 04 15 02 ff ff ff ff 00|"; content: "|32 03 0c 00 00 00 00 00 c0 a8 0f 63 00|"; distance: 15; classtype: bad-unknown; sid: 90000008; rev: 1;)

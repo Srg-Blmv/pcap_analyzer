@@ -110,7 +110,7 @@ def zeek_get_alerts(folder):
     else:
         return None
 
-
+# ndpix
 def ndpi(file):
     lines = file.read_text(errors="ignore").splitlines()
     lines = lines[12:]
@@ -315,15 +315,18 @@ def suricata_get_alerts(suricata_df):
 
         # Уникальные алерты
         # cчитаем строк в группе по которой делаем drop
-        counts = df_alert.groupby(['src_ip', 'src_port', 'dest_ip', 'dest_port', 'proto', 'app_proto', 'alert.signature']).size().reset_index(name='count')
-
-        # Удаляем дубликаты
-        uniq_alert = df_alert[['src_ip', 'src_port',
-                         'dest_ip', 'dest_port', 'proto', 'app_proto', 'alert.signature']].drop_duplicates().reset_index(drop=True)
+        counts = df_alert.groupby( ['src_ip', 
+                         'dest_ip', 'alert.signature'] ).size().reset_index(name='count')
+        
+       
+        # Удаляем дубликаты ПО 3 ключам, но БЕРЁМ ВСЕ столбцы
+        uniq_alert = df_alert.drop_duplicates(subset=['src_ip', 'dest_ip', 'alert.signature']).reset_index(drop=True)
 
         # Объединяем уникальные строки с колонкой с количеством
-        uniq_alert = uniq_alert.merge(counts, on=['src_ip', 'src_port', 'dest_ip', 'dest_port', 'proto', 'app_proto', 'alert.signature'], how='inner')
-        uniq_alert = uniq_alert.merge(counts, how='inner')
+        uniq_alert = uniq_alert.merge(counts, on=['src_ip', 'dest_ip', 'alert.signature']).sort_values("alert.severity")
+        # По скольку объеденили не по 5tupl Src портв дропнем
+        # uniq_alert.drop("src_port", axis=1, inplace=True)
+        # uniq_alert.drop("payload", axis=1, inplace=True)
         return suricata_alert_count, uniq_alert
 
 
@@ -489,7 +492,7 @@ if select_folder != None:
             suricata_pie(suricata_alerts_count, col2)
             st.badge(f"uniq suricata alert: {len(uniq_alert)}")
             st.caption("Уникальные алерты сукариты (5tuple + proto + app_proto + alert.signature)" )
-            st.write(uniq_alert)
+            st.dataframe(uniq_alert,hide_index=True,column_config={"payload": None, "src_port": None})
         else:
             with col2:
                 st.markdown(

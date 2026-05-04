@@ -1,0 +1,1 @@
+alert http any any -> any 8080 (msg: "Listing SPPA-T3000 directory using BrowseServlet"; flow: established, to_server; content: "/orion/servlet/BrowseServlet"; http_uri; content: "POST"; http_method; metadata: created 26_02_2020; reference:url,cert-portal.siemens.com/productcert/pdf/ssa-451445.pdf; classtype: misc-activity; sid:80000024; rev: 1;)

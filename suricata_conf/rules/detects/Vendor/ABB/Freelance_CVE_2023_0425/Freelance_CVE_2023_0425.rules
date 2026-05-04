@@ -1,0 +1,1 @@
+alert http any any -> any 80 (msg:"ABB Freelance Signed Int Overflow"; flow: established, to_server; content: "/upl.do"; pcre: "/Content-Length:\s+([2-9]\d{5,}|[1-9]\d{6,})/i"; reference:url,nvd.nist.gov/vuln/detail/CVE-2023-0425; classtype:shellcode-detect; sid:50000102; rev:1;)

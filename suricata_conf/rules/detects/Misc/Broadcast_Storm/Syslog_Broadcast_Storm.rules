@@ -1,0 +1,14 @@
+#alert tcp any any -> any 601 (sid:80000001; msg:"Syslog message about rebuilding network topology. Event - Flush FDB"; classtype:misc-activity; content:"S_hpl_FLUSH_FDB";)
+alert udp any any -> any 514 (sid:80000002; msg:"Syslog message about rebuilding network topology. Event - Flush FDB"; classtype:misc-activity; content:"S_hpl_FLUSH_FDB";)
+alert tcp any any -> any 1468 (sid:80000003; msg:"Syslog message about rebuilding network topology. Event - Flush FDB"; classtype:misc-activity; content:"S_hpl_FLUSH_FDB";)
+alert udp any any -> any 1514 (sid:80000004; msg:"Syslog message about rebuilding network topology. Event - Flush FDB"; classtype:misc-activity; content:"S_hpl_FLUSH_FDB";)
+
+#alert tcp any any -> any 601 (sid:80000005; msg:"Syslog message about triggering network redundancy. Event - Address Relearn"; classtype:misc-activity; content:"AddressRelearn";)
+alert udp any any -> any 514 (sid:80000006; msg:"Syslog message about triggering network redundancy. Event - Address Relearn"; classtype:misc-activity; content:"AddressRelearn";)
+alert tcp any any -> any 1468 (sid:80000007; msg:"Syslog message about triggering network redundancy. Event - Address Relearn"; classtype:misc-activity; content:"AddressRelearn";)
+alert udp any any -> any 1514 (sid:80000008; msg:"Syslog message about triggering network redundancy. Event - Address Relearn"; classtype:misc-activity; content:"AddressRelearn";)
+
+#alert tcp any any -> any 601 (sid:80000009; msg:"Syslog message about triggering network redundancy. Event - Flapping Between Ports"; classtype:misc-activity; content:"MACFLAP_NOTIF";)
+alert udp any any -> any 514 (sid:80000010; msg:"Syslog message about triggering network redundancy. Event - Flapping Between Ports"; classtype:misc-activity; content:"MACFLAP_NOTIF";)
+alert tcp any any -> any 1468 (sid:80000011; msg:"Syslog message about triggering network redundancy. Event - Flapping Between Ports"; classtype:misc-activity; content:"MACFLAP_NOTIF";)
+alert udp any any -> any 1514 (sid:80000012; msg:"Syslog message about triggering network redundancy. Event - Flapping Between Ports"; classtype:misc-activity; content:"MACFLAP_NOTIF";)

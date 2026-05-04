@@ -1,0 +1,2 @@
+alert udp any any -> any [18507:18510] (msg:"DeltaV attempt DOS"; content:"|FA CE|"; offset:0; depth:2; content:"|00 07|"; offset:4; depth:2; content:"|09|"; offset:17; depth:1; byte_test:2,>,64,20; classtype: denial-of-service; sid:30000156; rev:1;)
+alert udp any any -> any [18507:18510] (msg:"DeltaV attempt DOS"; content:"|FA CE|"; offset:0; depth:2; content:"|00 07|"; offset:4; depth:2; content:"|19|"; offset:17; depth:1; byte_test:2,>,64,20;  classtype: denial-of-service; sid:30000157; rev:1;)

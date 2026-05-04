@@ -1,0 +1,2 @@
+alert tcp any any -> $HOME_NET 502 (msg:" Schneider PLC(Quantumn) uses function code 90 for communications the Unity pro software/Set PLC CPU STOP";content:"|00 5a 01 41 ff 00|"; classtype:bad-unknown;sid:13371112;)
+alert tcp any any -> $HOME_NET 502 (msg:" Schneider PLC(Quantumn) uses function code 90 for communications the Unity pro software/Set PLC CPU START";content:"|00 5a 01 40 ff 00|"; classtype:bad-unknown;sid:13371113;)

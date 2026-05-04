@@ -1,0 +1,1 @@
+alert tcp any any -> $HOME_NET any (msg:"[ISIM Rules] Remote DoS Vulnerability in AVEVA InduSoft"; content: "|02 31 10 31 10 38 10 32 10 32 03 02 51|"; offset:0; depth:14; content: "|41 41 41 41 41 41 41 41|"; offset:100; depth:10; dsize:>900; reference: cve, 2018-10620 ; classtype: denial-of-service; sid: 500000106; rev: 1;)

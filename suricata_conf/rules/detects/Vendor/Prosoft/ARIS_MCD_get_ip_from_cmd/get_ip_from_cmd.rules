@@ -1,0 +1,2 @@
+alert udp any any -> any 5000 (sid:70000023; msg:"mcd_get_ip_from_cmd"; classtype:misc-activity; content:"get_ip_from_cmd("; offset: 0; depth: 16; content:","; distance:1; within:2;content:","; distance:1;  content:","; distance:1; content:","; distance:1; content:")"; distance:1;)
+alert udp any 5000 -> any any (sid:70000024; msg:"mcd_new_ip_received"; classtype:misc-attack; content:"new_ip_received("; offset: 0; depth: 16;)

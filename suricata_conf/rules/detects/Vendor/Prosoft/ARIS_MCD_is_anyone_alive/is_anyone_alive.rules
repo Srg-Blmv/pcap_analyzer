@@ -1,0 +1,2 @@
+alert udp any any -> any 5000 (sid:70000021; msg:"mcd_is_anyone_alive"; classtype:attempted-recon; content:"is_anyone_alive("; offset: 0; depth: 16; content:")"; distance:1;)
+alert udp any 5000 -> any any (sid:70000022; msg:"mcd_im_alive"; classtype:successful-recon-limited; content:"im_alive("; offset: 0; depth: 9;)

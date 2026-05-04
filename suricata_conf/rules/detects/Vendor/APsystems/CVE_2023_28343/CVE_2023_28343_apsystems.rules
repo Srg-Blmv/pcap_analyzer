@@ -1,0 +1,3 @@
+# content: "/index.php/management/set_timezone"; http_uri - обращение к уязвимому uri сервера  
+# content: "|74 69 6d 65 7a 6f 6e 65  3d 25 36 30|" - инъекция обратной кавычки ` в параметр hostname
+alert http any any -> any any (msg: "[PT ISIM] CVE-2023-28343 APsystems Altenergy Power Control C1.2.5 command injection"; flow: established, to_server; content: "POST"; nocase; http_method; content: "/index.php/management/set_timezone"; http_uri; nocase; content: "|74 69 6d 65 7a 6f 6e 65  3d 25 36 30|"; offset:550; depth:200; classtype: web-application-attack; sid: 13370024; rev: 1; priority:2; reference: url, https://github.com/superzerosec/CVE-2023-28343; reference: cve,2023-28343;)

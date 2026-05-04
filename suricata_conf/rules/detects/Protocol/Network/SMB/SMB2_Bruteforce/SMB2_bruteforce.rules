@@ -1,0 +1,2 @@
+alert smb any any -> any 445 (sid:13378080; classtype:suspicious-login; msg:"SMB session setup"; content:"|01 00|"; offset: 16; depth: 2;)
+alert smb any any -> any 445 (sid:13378081; classtype:suspicious-login; msg:"SMB session logoff"; content:"|02 00|"; offset: 16; depth: 2;)

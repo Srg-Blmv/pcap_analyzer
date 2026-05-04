@@ -1,0 +1,5 @@
+alert tcp any any -> $HOME_NET 21 (msg:"Weak ftp password: too short"; content:"|50 41 53 53|"; pcre:"/\x50\x41\x53\x53..{1,8}\x0d\x0a/"; classtype:policy-violation; sid:40000002; rev:1;)
+alert tcp any any -> $HOME_NET 21 (msg:"Weak ftp password: just letters"; content:"|50 41 53 53|"; pcre:"/\x50\x41\x53\x53.[\x61-\x7a]{8,}\x0d\x0a/"; classtype: policy-violation; sid:40000003; rev:1;)
+alert tcp any any -> $HOME_NET 21 (msg:"Weak ftp password: just numbers"; content:"|50 41 53 53|"; pcre:"/\x50\x41\x53\x53.[\x30-\x39]{8,}\x0d\x0a/"; classtype: policy-violation; sid:40000004; rev:1;)
+alert tcp any any -> $HOME_NET 21 (msg:"Weak ftp password: just letters"; content:"|50 41 53 53|"; pcre:"/\x50\x41\x53\x53.[\x41-\x5a]{8,}\x0d\x0a/"; classtype: policy-violation; sid:40000005; rev:1;)
+alert tcp any 21 -> $HOME_NET any (msg:"FTP log in"; content:"Login successful"; classtype:successful-user; sid:40000013; rev:1;)

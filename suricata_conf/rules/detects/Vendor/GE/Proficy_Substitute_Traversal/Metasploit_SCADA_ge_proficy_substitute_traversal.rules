@@ -1,0 +1,1 @@
+alert http any  any -> $HOME_NET 80 (msg:"ge_proficy_substitute_traversal"; flow:to_server, established; content:"|67 65 66 65 62 74 2E 65 78 65 3F 73 75 62 73 74 69 74 75 74 65 2E 62 63 6C 2B 46 49 4C 45 3D|"; classtype:attempted-recon; sid:13371111; rev:1;)

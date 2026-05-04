@@ -1,0 +1,2 @@
+alert tcp any 502 -> any any (msg:"Modbus CVE-2010-4709 expluatation attempted"; content:"|00 00 02 01 00 03 02 00 00|"; offset:2; depth:9 ; classtype:shellcode-detect; sid:13372510;)
+alert tcp any 502 -> any any (msg:"Modbus CVE-2010-4709 expluatation attempted"; content:"|00 00 02 b0 00 03 02 00 00|"; offset:2; depth:9 ; classtype:shellcode-detect; sid:13372511;)

@@ -1,0 +1,1 @@
+alert http any any -> any any (msg:"[PT ISIM] Moxa MXview 2.8 - Private Key Disclosure"; flow:to_server,established; content: "GET"; http_method; content: "/certs/mxview.key"; http_uri; reference: cve, 2017-7455; reference:url,hyp3rlinx.altervista.org/advisories/MOXA-MXVIEW-v2.8-REMOTE-PRIVATE-KEY-DISCLOSURE.txt; classtype: misc-activity; sid:80000121; rev:1;)

@@ -1,0 +1,1 @@
+alert tcp any 5432 -> any any (msg:"SQL database password brute-force attempt over PostgreSQL"; flow:to_client,established; content:"|56 46 41 54 41 4c 00 43 32 38 50 30 31 00|"; content:"|52 61 75 74 68 5f 66 61 69 6c 65 64|"; distance: 0; classtype:default-login-attempt; sid:90000006; )

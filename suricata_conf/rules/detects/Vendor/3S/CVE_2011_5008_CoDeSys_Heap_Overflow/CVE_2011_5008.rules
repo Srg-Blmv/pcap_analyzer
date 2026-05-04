@@ -1,0 +1,1 @@
+alert tcp any any -> any 1217 (msg:"CVE-2011-5008, integer overflow in GatewayService"; flow: to_server,established,only_stream; byte_test:4, >=, 0xffffffcc, 12, little; classtype:shellcode-detect; sid:30000003;)

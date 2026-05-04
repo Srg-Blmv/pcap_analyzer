@@ -1,0 +1,1 @@
+alert tcp any any -> $HOME_NET 23 (msg:"ScadaTec Procyon Core server password overflow attempt"; flow:to_server,established,only_stream; content:"|BF 99 46 77 90 90 90 90 90 90 90 90 90 90|"; depth:14; offset:65; metadata:service telnet; reference:bugtraq,49480; reference:cve,2011-3322; classtype:attempted-user; sid:29515; rev:3;)

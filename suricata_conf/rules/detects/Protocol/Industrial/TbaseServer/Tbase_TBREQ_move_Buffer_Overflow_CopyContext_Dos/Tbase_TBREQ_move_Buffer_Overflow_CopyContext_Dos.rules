@@ -1,0 +1,1 @@
+alert tcp $HOME_NET any -> $HOME_NET 55502 (sid:80000105; rev:1; msg:"[PT Rules][ISIM] Buffer overflow attempt through the CopyContext field of the TBREQ_move command"; content:"|00 00 00 0b|"; byte_test:4,>,0x0000c010,-8,relative; pcre:"/\x00\x00\x00\x0b.{8}[\x01-\xff]+\x00[\x01-\xff]+$/"; flow:to_server; classtype:attempted-dos;)

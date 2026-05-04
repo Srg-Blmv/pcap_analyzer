@@ -1,0 +1,2 @@
+# Windows BSoD by an empty WebDAV resourcetype xml tag
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg: "Possible attempt to DoS or EoP windows"; content: "DAV"; nocase; http_header; content: "resourcetype"; nocase; http_server_body; pcre: !"/resourcetype[^<]+[^:]+\:\s*collection/Q"; flow: from_server, established; reference: cve,2016-0051; metadata: ips cwe-112, capec-220; metadata: updated_at 2019_07_25; classtype: denial-of-service; sid: 10000017; rev: 2; priority:4;)

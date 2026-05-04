@@ -1,0 +1,1 @@
+alert tcp any any -> $HOME_NET 777 (msg:"WellinTech Kingview HMI history server buffer overflow attempt"; flow:to_server,established,only_stream; content:"|03 00 00|"; depth:3; offset:2; byte_test:2,>,9,0,little; byte_extract:2,4,count,relative,little,multiplier 12; byte_test:2,>,count,0,little; classtype:bad-unknown; sid:30000014;)

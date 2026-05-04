@@ -1,0 +1,1 @@
+alert tcp any any -> any 502 (msg:"CVE-2018-7844 - Modicon Memory Dump Pattern"; flow:established,to_server; content:"|FF FF 00 00 00 0D 01 5A 00 20 00|"; depth:11; offset:0; content:"|00 02|"; distance:6; within:2; reference:cve,2018-7844; classtype:denial-of-service; sid:500000112; rev:1;)

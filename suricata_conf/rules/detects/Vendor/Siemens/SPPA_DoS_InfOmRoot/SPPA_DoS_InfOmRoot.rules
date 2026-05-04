@@ -1,0 +1,1 @@
+alert tcp any any -> any 7061 (msg:"SPPA T-3000 InfOmRoot stop"; flow:to_server, established; content:"|70 72 6f 63 65 73 73 5f 73 74 6f 70 20 54 33 4b 43 4d 2f 31 2e 30 0a|"; reference:cve,2019-18311; reference:url,cert-portal.siemens.com/productcert/pdf/ssa-451445.pdf; classtype:attempted-dos; sid:80000020; rev:1;)

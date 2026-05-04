@@ -1,0 +1,1 @@
+alert udp any any -> any 20010 ( msg:"PROTOCOL-SCADA Yokogawa CS3000 BKFSim_vhfd buffer overflow attempt"; flow:to_server; content:"|45 54 56 48 01 01 10 09 00 00 00 01 00 00 00 44|"; fast_pattern; nocase; isdataat:460; content:"|9C 5C E5 61|"; depth: 4; offset: 454; reference:cve,2014-3888; classtype:attempted-admin; sid:30000081; rev:2; )

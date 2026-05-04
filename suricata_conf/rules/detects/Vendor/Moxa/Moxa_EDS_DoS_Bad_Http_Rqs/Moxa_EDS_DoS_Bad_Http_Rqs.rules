@@ -1,0 +1,1 @@
+alert tcp any any -> any 80 (msg:"Moxa EDS switch DoS by wrong http request"; content:"POST"; nocase; offset:0; depth:4; content:"port_name3=&PortSettingSubmit.x=41&PortSettingSubmit.y=19"; distance:300; flow:established,to_server,only_stream; classtype:attempted-dos; sid:30000041;)

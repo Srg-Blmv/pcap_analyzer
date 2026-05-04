@@ -1,0 +1,1 @@
+alert tcp any any -> any 443 (msg: "Siemens Scalance S613 Denial of Service (CVE-2016-3963)"; dsize: 18; content: "|1149 0000 0000 0000 0000 0000 0000 0000 289E|"; reference: url, https://cert-portal.siemens.com/productcert/pdf/ssa-751155.pdf; classtype: attempted-dos; metadata: created_at 2025_05_02; metadata: updated_at 2025_05_02; sid: 20000007; rev: 1;)

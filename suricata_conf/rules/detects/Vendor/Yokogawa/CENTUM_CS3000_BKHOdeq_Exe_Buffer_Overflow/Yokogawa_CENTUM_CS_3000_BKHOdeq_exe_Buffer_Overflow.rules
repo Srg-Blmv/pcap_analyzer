@@ -1,0 +1,2 @@
+alert tcp any any -> any 20171 (msg:"Yokogawa CENTUM CS 3000 BKHOdeq.exe Buffer Overflow"; classtype:shellcode-detect; sid:13371280; content:"|60 7a b2 63 60 7a b2 63 5f 7a b2 63 e0 61 e7 61 e4 41 e6 61 22 55 40 00|";)
+alert tcp any any -> any 20171 (msg:"Yokogawa CENTUM CS 3000 BKHOdeq.exe Buffer Overflow"; classtype:shellcode-detect; sid:13371290; content:"|a4 2a e6 61 c0 48 e6 61 3f 24 f3 66 01 00 00 00 dd 29 e7 61 00 10 00 00 6f 3f a9 63 40 00 00 00 6a 1f ad 63 12 38 dd 63 4c 0b e6 61 90 90 90 90 c3 5c ae 63 64 a1 18 00 00 00 83 c0 08 8b 20 81 C4 30 F8 FF FF|";)

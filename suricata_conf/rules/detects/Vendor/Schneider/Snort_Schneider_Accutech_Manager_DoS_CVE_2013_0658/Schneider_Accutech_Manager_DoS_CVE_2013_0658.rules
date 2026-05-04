@@ -1,0 +1,2 @@
+alert tcp any any -> $HOME_NET 2537 (msg:"SCADA Schneider Electric Accutech http request overflow attempt"; flow:to_server,established,no_stream; content:"GET /"; depth:5; isdataat:128,relative; content:!" HTTP/1.1"; within:128; reference:bugtraq,57651; reference:cve,2013-0658; classtype:denial-of-service; sid:50000005; rev:1;)
+

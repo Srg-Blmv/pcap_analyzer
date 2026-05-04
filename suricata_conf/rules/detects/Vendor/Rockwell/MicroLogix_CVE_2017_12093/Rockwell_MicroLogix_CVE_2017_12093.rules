@@ -1,0 +1,1 @@
+alert tcp any any -> any 44818 (sid:70000008; flow:to_server,established; msg:"Allen-Bradley MicroLogix 1400 CVE-2017-12093 - ENIP RegisterSession"; classtype:shellcode-detect; content:"|65 00 04 00|"; content:"|01 00|";  distance: 20; within: 2;)

@@ -1,0 +1,1 @@
+alert http $HOME_NET any -> $HOME_NET 80 (msg:"Reading the values of PV variables using the HTTP protocol"; flow:to_server,established; pcre:"/\/goform\/ReadWrite\?redirect=redirect_link&error_redirect=error_redirect_link&read=true&value=[\d]+&variable=/"; classtype:protocol-command-decode; sid:80000087; rev:1;)

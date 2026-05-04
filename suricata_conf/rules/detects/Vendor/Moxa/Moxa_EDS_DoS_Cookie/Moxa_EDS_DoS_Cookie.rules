@@ -1,0 +1,1 @@
+alert tcp any any -> any 80 (msg:"MOXA EDS switch cookie DoS attempt"; content:"Password508="; offset:300; content:!"|0d 0a|"; within:206; flow:established,to_server,only_stream; classtype:attempted-dos; sid:30000040;)

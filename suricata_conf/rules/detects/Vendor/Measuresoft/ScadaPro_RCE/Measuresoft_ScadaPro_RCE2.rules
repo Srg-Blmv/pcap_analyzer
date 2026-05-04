@@ -1,0 +1,1 @@
+alert tcp any any -> $HOME_NET 11234 (msg:"Measuresoft ScadaPro Remote Command Execution"; classtype:shellcode-detect; sid:13371123; content:"xf%..\\..\\..\\..\\..\\windows\\system32\\msvcrt.dll,system,start";)

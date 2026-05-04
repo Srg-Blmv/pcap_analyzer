@@ -1,0 +1,1 @@
+alert tcp any any -> any 9991 (msg: "ABB Freelance Load CFG"; content:"|20 00 5c 1c|"; content:"|ff ff|"; distance:10; content:"|34 1c 00|"; distance:0; classtype: bad-unknown; sid: 90000003; rev: 1;)

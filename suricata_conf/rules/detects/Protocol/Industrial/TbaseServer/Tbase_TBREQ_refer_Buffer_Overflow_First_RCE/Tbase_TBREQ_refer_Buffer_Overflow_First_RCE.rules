@@ -1,0 +1,1 @@
+alert tcp $HOME_NET any -> $HOME_NET 55502 (sid:80000103; rev:1; msg:"[PT Rules][ISIM] Buffer overflow attempt through the first parameter of the TBREQ_refer command"; content:"|00 00 00 1e|"; byte_test:4,>,0x0000c010,-8,relative; pcre:"/\x00\x00\x00\x1e.{8}[\x01-\xff]+$/"; flow:to_server; classtype:attempted-admin;)

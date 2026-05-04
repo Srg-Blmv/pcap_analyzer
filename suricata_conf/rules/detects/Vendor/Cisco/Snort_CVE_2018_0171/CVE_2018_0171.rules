@@ -1,0 +1,1 @@
+alert tcp any any -> any 4786 (sid:13370171; msg:"Cisco CVE-2018-0171 Cisco IOS (XE) buffer overflow"; classtype:shellcode-detect; content:"|00 00 00 01 00 00 00 01 00 00 00 07|"; dsize: >1400;)

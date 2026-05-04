@@ -1,0 +1,1 @@
+alert tcp any any -> any 2031 (msg:"ROCKWELL-THINMANAGER Path Traversal File Deletion Attempt"; flow:to_server,established; content:"|00 15 00 21|"; depth:4; content:"|00 00 00 aa|"; within:20; content:"unk_str1"; within:30; pcre:"/\.\.\\(\.\.\\){3,}/"; reference:cve,2023-2915; classtype:attempted-admin; sid:500000109; rev:1;)

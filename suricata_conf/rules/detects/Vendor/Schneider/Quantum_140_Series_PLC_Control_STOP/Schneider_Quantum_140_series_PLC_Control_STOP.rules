@@ -1,0 +1,1 @@
+alert tcp any any -> any 502 (msg:"Schneider Quantum 140 series PLC Control STOP"; content:"|00000006005a41ff00|"; offset:2; depth:9; classtype:shellcode-detect; sid:13371341;)

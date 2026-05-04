@@ -1,0 +1,1 @@
+alert http any any -> any [80,443,8080] (msg: "SPPA T-3000 /orion/software directory access"; flow: established, to_server; content: "/orion/software"; http_uri; metadata: created 25_02_2020; reference:cve,2019-18335; reference:url,cert-portal.siemens.com/productcert/pdf/ssa-451445.pdf; classtype: misc-activity; sid:80000023; rev: 1;)

@@ -1,0 +1,2 @@
+alert udp any any -> any 5000 (sid:70000033; msg:"mcd_reset_state"; classtype:misc-activity; content:"reset_state("; offset: 0; depth: 12; content:","; distance:1; within:2;content:","; distance:1; content:")"; distance:1;)
+alert udp any 5000 -> any any (sid:70000034; msg:"mcd_initial_state"; classtype:misc-activity; content:"initial_state("; offset: 0; depth: 14;)

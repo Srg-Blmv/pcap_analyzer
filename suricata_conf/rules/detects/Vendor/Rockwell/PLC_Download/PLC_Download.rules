@@ -1,0 +1,3 @@
+alert tcp any any -> any 44818 (sid:70000018; msg:"Rockwell PLC RequestPath for Object 0x8e Service 0x5c"; classtype:misc-activity; content:"|5c 02 20 8e 24 01|"; offset: 46; depth: 26;)
+alert tcp any any -> any 44818 (sid:70000019; msg:"Rockwell PLC RequestPath for Object 0x64 Service 0x4b"; classtype:misc-activity; content:"|4b 02 20 64 24 01|"; offset: 46; depth: 6;)
+alert tcp any any -> any 44818 (sid:70000020; msg:"Rockwell PLC RequestPath for Object 0x64 Service 0x4c"; classtype:misc-activity; content:"|4c 02 20 64 24 01|"; offset: 46; depth: 6;)

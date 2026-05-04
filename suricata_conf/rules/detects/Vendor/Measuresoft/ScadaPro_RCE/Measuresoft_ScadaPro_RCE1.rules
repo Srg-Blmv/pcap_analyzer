@@ -1,0 +1,1 @@
+alert tcp any any -> $HOME_NET 11234 (msg:"Measuresoft ScadaPro Remote Command Execution"; classtype:shellcode-detect; sid:13371122; content:"CreateObject(\"Microsoft.XMLHTTP\")"; content:"CreateObject(\"ADODB.Stream\")"; distance:1; content:"CreateObject(\"WScript.Shell\").Run"; distance:1;)
