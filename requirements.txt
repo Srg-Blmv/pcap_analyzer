@@ -4,3 +4,4 @@ pandas==2.3.3
 graphviz===0.21
 streamlit-echarts==0.6.0
 plotly==6.5.2
+pyvis==0.3.2
