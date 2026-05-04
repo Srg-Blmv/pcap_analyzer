@@ -154,11 +154,12 @@ def search_public_ip(ip_addrf):
     return df
 
 
-##### streamlit
-# if 'sel_folder' not in st.session_state:
-#     continue
-select_folder = st.selectbox("select folder", folder)
-#st.session_state.sel_folder  = select_folder
+def change_folden():
+    st.session_state.key =  st.session_state.new_folden
+
+select_folder = st.session_state.key
+st.selectbox("select folder", folder, on_change=change_folden, key='new_folden', index=None, placeholder="Выберети папку") 
+
 st.set_page_config(layout="wide")
 
 
@@ -186,154 +187,155 @@ if select_folder != None:
             suricata_file
         )
 
-        st.header("Summary")
-        st.html("<hr></hr>")
+    #     st.header("Summary")
+    #     st.html("<hr></hr>")
 
-    # DPI Protocols
+    # # DPI Protocols
 
-        col1, col2, = st.columns(2,border=True)
-        height = "400px"
-        protocols_sorted = protocols.sort_values('packets', ascending=True)
-        if len(protocols) > 10:
-            height = "600px"
-            fig = px.bar(
-                protocols.sort_values('packets'),
-                y='protocol',
-                x='packets',
-                orientation='h',
-                title='nDPI',
-                height=600,
-                text_auto=True
-            )
-            fig.update_layout( margin=dict(l=0, r=0, t=30, b=0))
-            fig.update_xaxes(type="log")
-            fig.update_xaxes(visible=False)  # скрыть вообще всё на оси X
-            fig.update_layout(yaxis={'categoryorder': 'total ascending'})
-            fig.update_traces(textposition='outside')
-            with col1:
-               st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})
+    #     col1, col2, = st.columns(2,border=True)
+    #     height = "400px"
+    #     protocols_sorted = protocols.sort_values('packets', ascending=True)
+    #     if len(protocols) > 10:
+    #         height = "600px"
+    #         fig = px.bar(
+    #             protocols.sort_values('packets'),
+    #             y='protocol',
+    #             x='packets',
+    #             orientation='h',
+    #             title='nDPI',
+    #             height=600,
+    #             text_auto=True
+    #         )
+    #         fig.update_layout( margin=dict(l=0, r=0, t=30, b=0))
+    #         fig.update_xaxes(type="log")
+    #         fig.update_xaxes(visible=False)  # скрыть вообще всё на оси X
+    #         fig.update_layout(yaxis={'categoryorder': 'total ascending'})
+    #         fig.update_traces(textposition='outside')
+    #         with col1:
+    #            st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})
 
-        else:
-            options_ndpi = {
-                "title": {"text": "nDPI", "subtext": "", "left": "right"},
-                "tooltip": {"trigger": "item"},
-                "legend": {"orient": "vertical", "left": "left", },
-                "series": [
-                    {
-                        "name": "packets",
-                        "type": "pie",
-                        "radius": "70%",
-                        "avoidLabelOverlap": True,
-                        "itemStyle": {
-                            "borderRadius": 10,
-                            "borderColor": "#fff",
-                            "borderWidth": 2,
-                        },
-                        #"label": {"show": True, "position": "center"},
-                        "emphasis": {
-                            "label": {"show": True, "fontSize": 40, "fontWeight": "bold"}
-                        },
-                    "labelLine": {"show": True},
-                        "data": [
-                        {
-                            "value": row['packets'], 
-                            "name": f"{(row['protocol'])}"
-                        }
-                        for _, row in protocols_sorted.iterrows()
-                    ],
-                        "emphasis": {
-                            "itemStyle": {
-                                "shadowBlur": 10,
-                                "shadowOffsetX": 0,
-                                "shadowColor": "rgba(0, 0, 0, 0.5)",
-                            }
-                        },
-                    }
-                ],
-                "backgroundColor": "rgba(0, 0, 0, 0)",  # Transparent background
-            }   
-            with col1:
-                st_echarts(options=options_ndpi, height=height)
+    #     else:
+    #         options_ndpi = {
+    #             "title": {"text": "nDPI", "subtext": "", "left": "right"},
+    #             "tooltip": {"trigger": "item"},
+    #             "legend": {"orient": "vertical", "left": "left", },
+    #             "series": [
+    #                 {
+    #                     "name": "packets",
+    #                     "type": "pie",
+    #                     "radius": "70%",
+    #                     "avoidLabelOverlap": True,
+    #                     "itemStyle": {
+    #                         "borderRadius": 10,
+    #                         "borderColor": "#fff",
+    #                         "borderWidth": 2,
+    #                     },
+    #                     #"label": {"show": True, "position": "center"},
+    #                     "emphasis": {
+    #                         "label": {"show": True, "fontSize": 40, "fontWeight": "bold"}
+    #                     },
+    #                 "labelLine": {"show": True},
+    #                     "data": [
+    #                     {
+    #                         "value": row['packets'], 
+    #                         "name": f"{(row['protocol'])}"
+    #                     }
+    #                     for _, row in protocols_sorted.iterrows()
+    #                 ],
+    #                     "emphasis": {
+    #                         "itemStyle": {
+    #                             "shadowBlur": 10,
+    #                             "shadowOffsetX": 0,
+    #                             "shadowColor": "rgba(0, 0, 0, 0.5)",
+    #                         }
+    #                     },
+    #                 }
+    #             ],
+    #             "backgroundColor": "rgba(0, 0, 0, 0)",  # Transparent background
+    #         }   
+    #         with col1:
+    #             st_echarts(options=options_ndpi, height=height)
 
 
-    ### Suricata
-        suricata_alert_count = suricata_alert_count.to_frame().reset_index()
-        # переименовал колонку потому что когда в название точка он не строил
-        # suricata_alert_count = suricata_alert_count.rename(
-        #     columns={"alert.severity": "severity"}
-        # )
+    # ### Suricata
+    #     suricata_alert_count = suricata_alert_count.to_frame().reset_index()
+    #     # переименовал колонку потому что когда в название точка он не строил
+    #     # suricata_alert_count = suricata_alert_count.rename(
+    #     #     columns={"alert.severity": "severity"}
+    #     # )
 
-        severity_colors = {
-            1: "#ff4444",  
-            2: "#ffaa44",  
-            3: "#44aaff",  
-        }
+    #     severity_colors = {
+    #         1: "#ff4444",  
+    #         2: "#ffaa44",  
+    #         3: "#44aaff",  
+    #     }
 
-        options_suricata = {
-        "title": {"text": "suricata alert", "subtext": "", "left": "right"},
-        "tooltip": {"trigger": "item"},
-        "legend": {"orient": "vertical", "left": "left", },
-        "series": [
-            {
-                "name": "count",
-                "type": "pie",
-                "radius": ["40%", "70%"],
-                "avoidLabelOverlap": False,
-                "itemStyle": {
-                    "borderRadius": 10,
-                    "borderColor": "#fff",
-                    "borderWidth": 2,
-                },
-                #"label": {"show": True, "position": "center"},
-                "emphasis": {
-                    "label": {"show": True, "fontSize": 40, "fontWeight": "bold"}
-                },
-            "labelLine": {"show": True},
-                 "data": [
-                {
-                    "value": row['count'], 
-                    "name": f"Severity {int(row['alert.severity'])}",
-                    "itemStyle": {"color": severity_colors.get(int(row['alert.severity']), "#999999")}
-                }
-                for _, row in suricata_alert_count.iterrows()
-            ],
-             "color": ["#ff4444", "#ffaa44", "#44aaff"], 
-                "emphasis": {
-                    "itemStyle": {
-                        "shadowBlur": 10,
-                        "shadowOffsetX": 0,
-                        "shadowColor": "rgba(0, 0, 0, 0.5)",
-                    }
-                },
-            }
-        ],
-        "backgroundColor": "rgba(0, 0, 0, 0)",  # Transparent background
-    }   
+    #     options_suricata = {
+    #     "title": {"text": "suricata alert", "subtext": "", "left": "right"},
+    #     "tooltip": {"trigger": "item"},
+    #     "legend": {"orient": "vertical", "left": "left", },
+    #     "series": [
+    #         {
+    #             "name": "count",
+    #             "type": "pie",
+    #             "radius": ["40%", "70%"],
+    #             "avoidLabelOverlap": False,
+    #             "itemStyle": {
+    #                 "borderRadius": 10,
+    #                 "borderColor": "#fff",
+    #                 "borderWidth": 2,
+    #             },
+    #             #"label": {"show": True, "position": "center"},
+    #             "emphasis": {
+    #                 "label": {"show": True, "fontSize": 40, "fontWeight": "bold"}
+    #             },
+    #         "labelLine": {"show": True},
+    #              "data": [
+    #             {
+    #                 "value": row['count'], 
+    #                 "name": f"Severity {int(row['alert.severity'])}",
+    #                 "itemStyle": {"color": severity_colors.get(int(row['alert.severity']), "#999999")}
+    #             }
+    #             for _, row in suricata_alert_count.iterrows()
+    #         ],
+    #          "color": ["#ff4444", "#ffaa44", "#44aaff"], 
+    #             "emphasis": {
+    #                 "itemStyle": {
+    #                     "shadowBlur": 10,
+    #                     "shadowOffsetX": 0,
+    #                     "shadowColor": "rgba(0, 0, 0, 0.5)",
+    #                 }
+    #             },
+    #         }
+    #     ],
+    #     "backgroundColor": "rgba(0, 0, 0, 0)",  # Transparent background
+    # }   
         
 
-        with col2:
-            st_echarts(options=options_suricata, height=height)
+    #     with col2:
+    #         st_echarts(options=options_suricata, height=height)
 
 
-        # st.bar_chart(
-        #     suricata_alert_count, x="severity", y="count", horizontal=True, sort=False
-        # )
+    #     # st.bar_chart(
+    #     #     suricata_alert_count, x="severity", y="count", horizontal=True, sort=False
+    #     # )
 
 
 
-    # DNS UNIQ
-    st.caption("Unique Domain Name")
-    st.dataframe(dns)
+    # # DNS UNIQ
+    # st.caption("Unique Domain Name")
+    # st.dataframe(dns,hide_index=True)
 
-    # Public IP
-    st.caption("Public Ip")
-    df_public_ip = search_public_ip(ip_addrs)
-    st.dataframe(df_public_ip)
+    # # Public IP
+    # st.caption("Public Ip")
+    # df_public_ip = search_public_ip(ip_addrs)
+    # st.dataframe(df_public_ip, hide_index=True)
 
     # LOGS
     ##################################
-    st.header("Logs")
+    st.subheader(f"Logs pcap: {st.session_state.key}")
     st.html("<hr></hr>")
+
 
     if eve_file_suricata:
         st.subheader("Suricata")

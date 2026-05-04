@@ -2,3 +2,7 @@ venv/
 data/
 .vscode/
 zeek_conf/Zeek-Intelligence-Feeds
+files.ipynb
+GRAF.ipynb
+*.html
+zeek_to_sql.py

@@ -7,7 +7,6 @@ LOG_DIR = Path("data")
 
 st.set_page_config(layout="wide")
 
-
 with st.container(horizontal=True):
 
     if st.button("clean", help="clean data folder"):
@@ -30,9 +29,11 @@ with st.container(horizontal=True):
 
 
 
+if 'key' not in st.session_state:
+    st.session_state.key = None
 
 uploaded_file = st.file_uploader(
-    "Choose a file", type=["pcapng", "pcap"], max_upload_size=100)
+    "Choose a file", type=["pcapng", "pcap"], max_upload_size=200)
 
 
 
@@ -78,6 +79,11 @@ if uploaded_file is not None:
                 f'{os.path.abspath("ndpi")}/ndpiReader -i {full_path_file} -d -F -t -K json -k {path_dir}/ndpi/ndpi.json > {path_dir}/ndpi/ndpi_summary.log 2>&1')
         st.success('ndpi done')
         
+
+
+        st.session_state.key = name_pcap_dir
+
+
         
     except FileExistsError:
         st.error('file already exists')
