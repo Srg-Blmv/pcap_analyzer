@@ -154,6 +154,9 @@ def search_public_ip(ip_addrf):
     return df
 
 
+
+if 'key' not in st.session_state:
+    st.session_state.key = None
 def change_folden():
     st.session_state.key =  st.session_state.new_folden
 

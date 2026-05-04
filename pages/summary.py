@@ -450,6 +450,9 @@ def ftp_files(folder_zeek):
 
 
 # ========= MAIN ===============
+if 'key' not in st.session_state:
+    st.session_state.key = None
+
 def change_folden():
     st.session_state.key =  st.session_state.new_folden
 
@@ -538,50 +541,54 @@ if select_folder != None:
                 st.caption("Уникальные публичные IP адресса, GeoLite2 ")
                 st.dataframe(df_public_ip, hide_index=True)
 
-    
+# =================== ФАЙЛЫ =====================
+
     # Ищем Файлы
     files_log = f"{folder_zeek}/files.log"
-    if Path(files_log).is_file():
-        with open(files_log, 'r') as f:
-            data = [json.loads(line.strip()) for line in f if line.strip()]
-        # Создаём DataFrame
-        df_files = pd.DataFrame(data)
-        uniq_protos = df_files["source"].drop_duplicates().reset_index(drop=True)
+
+    if Path(files_log).is_file()  or fileinfo is not None:
         st.header("Файлы")
         st.html("<hr></hr>")
-        st.badge(f"zeek протоколы в которых найдены файлы: {uniq_protos.values}",color='green')
-        st.caption("Файлы из Zeek files.log с данными из http/ftp")
-        st.caption("Eсли таблица есть но emty значит в файле files.log есть запись, но в файле протокола нет записи о файле.")
 
-        if 'HTTP' in uniq_protos.values:
-            http_files(folder_zeek)
-        if 'FTP_DATA' in uniq_protos.values:       
-            ftp_files(folder_zeek)
+        if Path(files_log).is_file():
+            with open(files_log, 'r') as f:
+                data = [json.loads(line.strip()) for line in f if line.strip()]
+            # Создаём DataFrame
+            df_files = pd.DataFrame(data)
+            uniq_protos = df_files["source"].drop_duplicates().reset_index(drop=True)
+            st.badge(f"zeek протоколы в которых найдены файлы: {uniq_protos.values}",color='green')
+            st.caption("Файлы из Zeek files.log с данными из http/ftp")
+            st.caption("Eсли таблица есть но emty значит в файле files.log есть запись, но в файле протокола нет записи о файле.")
 
+            if 'HTTP' in uniq_protos.values:
+                http_files(folder_zeek)
+            if 'FTP_DATA' in uniq_protos.values:       
+                ftp_files(folder_zeek)
 
-
-    
-    if fileinfo is not None:
-        st.badge(f"suricata протоклы в которых найдены файлы: { fileinfo["app_proto"].drop_duplicates().reset_index(drop=True).values}", color="green")
-        st.badge(f"suricata  fileinfo: {len(fileinfo)}")
-        st.dataframe(fileinfo)
+        if fileinfo is not None:
+            st.badge(f"suricata протоколы в которых найдены файлы: { fileinfo["app_proto"].drop_duplicates().reset_index(drop=True).values}", color="green")
+            st.badge(f"suricata  fileinfo: {len(fileinfo)}")
+            st.dataframe(fileinfo)
 
     # Ищем Аномалии
-    files_log = f"{folder_zeek}/weird.log"
-    if Path(files_log).is_file():
-        with open(files_log, 'r') as f:
-            data = [json.loads(line.strip()) for line in f if line.strip()]
-        # Создаём DataFrame
-        zeek_anomaly = pd.DataFrame(data)
+    weird_log = f"{folder_zeek}/weird.log"
+
+    if Path(weird_log).is_file() or suricata_anomaly is not None:
         st.header("Аномалии")
         st.html("<hr></hr>")
-        st.badge(f"zeek weird: {len(zeek_anomaly)}")
-        st.dataframe(zeek_anomaly)
+        if Path(weird_log).is_file():
+            with open(weird_log, 'r') as f:
+                data = [json.loads(line.strip()) for line in f if line.strip()]
+            # Создаём DataFrame
+            zeek_anomaly = pd.DataFrame(data)
+
+            st.badge(f"zeek weird: {len(zeek_anomaly)}")
+            st.dataframe(zeek_anomaly)
 
 
-    if suricata_anomaly is not None:
-        st.badge(f"suricata anomaly: {len(suricata_anomaly)}")
-        st.dataframe(suricata_anomaly)
+        if suricata_anomaly is not None:
+            st.badge(f"suricata anomaly: {len(suricata_anomaly)}")
+            st.dataframe(suricata_anomaly)
     
 
 else:

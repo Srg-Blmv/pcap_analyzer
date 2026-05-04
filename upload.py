@@ -1,7 +1,10 @@
+import pandas as pd
 import streamlit as st
 import os
 from pathlib import Path
 from datetime import datetime
+import json
+
 
 LOG_DIR = Path("data")
 
@@ -33,12 +36,34 @@ if 'key' not in st.session_state:
     st.session_state.key = None
 
 uploaded_file = st.file_uploader(
-    "Choose a file", type=["pcapng", "pcap"], max_upload_size=200)
+    "Choose a file", type=["pcapng", "pcap"], max_upload_size=250)
 
 
 
 #if 'sel_folder' not in st.session_state:
 #    st.session_state.sel_folder = ""
+
+
+
+
+
+def summaty_csv(name_pcap_dir):
+    # alert sammary:
+    file_suricata = f'{name_pcap_dir}/eve.json'
+    if Path(file_suricata).is_file():
+        # Читаем eve.json построчно
+        data = []
+        with open(file_suricata) as f:
+            for line in f:
+                data.append(json.loads(line))
+
+        # # Превращаем в DataFrame
+       # df = pd.json_normalize(data)  # нормализует вложенные поля
+    return
+
+
+
+
 
 
 if uploaded_file is not None:
@@ -47,7 +72,6 @@ if uploaded_file is not None:
         name_pcap_dir = f'{datetime.now().strftime("%Y-%m-%d")}_{Path(file_name).stem}'
         path_dir = f'{LOG_DIR}/{name_pcap_dir}'
         full_path_file = f'{path_dir}/{file_name}'
-        st.session_state.sel_folder = name_pcap_dir
         os.mkdir(path_dir)
 
         with open(full_path_file, "wb") as f:
@@ -67,8 +91,8 @@ if uploaded_file is not None:
         os.mkdir(f'{path_dir}/zeek')
         with st.spinner("Zeek run, Wait for it...", show_time=True):
             os.system(
-                #f'docker run --rm -v {os.path.abspath("data")}:/pcap  -v {os.path.abspath("zeek_conf")}:/opt   zeek/zeek:8.0  bash -c "cd /pcap/{name_pcap_dir}/zeek && zeek -C -r ../{file_name}  /opt/Zeek-Intelligence-Feeds/main.zeek  LogAscii::use_json=T"')
-                f'docker run --rm -v {os.path.abspath("data")}:/pcap  -v {os.path.abspath("zeek_conf")}:/opt   zeek/zeek:8.0  bash -c "cd /pcap/{name_pcap_dir}/zeek && zeek -C -r ../{file_name}  /opt/Zeek-Intelligence-Feeds/__load__.zeek  LogAscii::use_json=T"')
+                #f'docker run --rm -v {os.path.abspath("data")}:/pcap  -v {os.path.abspath("zeek_conf")}:/opt   zeek/zeek:8.0  bash -c "cd /pcap/{name_pcap_dir}/zeek && zeek -C -r ../{file_name}  /opt/Zeek-Intelligence-Feeds/__load__.zeek  LogAscii::use_json=T"')
+                f'docker run --rm -v {os.path.abspath("data")}:/pcap  -v {os.path.abspath("zeek_conf")}:/opt   zeek/zeek:8.0  bash -c "cd /pcap/{name_pcap_dir}/zeek && zeek -C -r ../{file_name}  /opt/conf.zeek  LogAscii::use_json=T"')
         st.success('zeek done')
 
         

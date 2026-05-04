@@ -73,22 +73,22 @@ def dinamic_graf():
         "nodes": {"shape": "dot", "size": 18, "font": {"size": 14}},
         "edges": {"font": {"size": 14}, "length": 400},
         "interaction": {"dragNodes": True},
-        "physics": {
-            "barnesHut": {
-                "theta": 0.55,
-                "gravitationalConstant": -35100,
-                "centralGravity": 0,
-                "springLength": 0,
-                "damping": 1
-            },
-            "maxVelocity": 125,
-            "minVelocity": 0.75,
-            "timestep": 1,
-            "wind": {
-                "y": 0.4
-            }
-
-        },
+        "physics": {"enabled": False}
+        # "physics": {
+        #     "barnesHut": {
+        #         "theta": 0.55,
+        #         "gravitationalConstant": -35100,
+        #         "centralGravity": 0,
+        #         "springLength": 0,
+        #         "damping": 1
+        #     },
+        #     "maxVelocity": 125,
+        #     "minVelocity": 0.75,
+        #     "timestep": 1,
+        #     "wind": {
+        #         "y": 0.4
+        #     }
+        # },
         # "configure": {
         #     "enabled": True,
         #     #            "filter": ["physics"]
@@ -151,6 +151,9 @@ def dinamic_graf():
     st.components.v1.html(HtmlFile_udp.read(), height=700)
 
 
+
+if 'key' not in st.session_state:
+    st.session_state.key = None
 def change_folden():
     st.session_state.key =  st.session_state.new_folden
 
