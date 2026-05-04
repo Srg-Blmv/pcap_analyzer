@@ -1,7 +1,7 @@
 venv/
 data/
 .vscode/
-zeek_conf/Zeek-Intelligence-Feeds
+/Zeek-Intelligence-Feeds
 files.ipynb
 GRAF.ipynb
 *.html
