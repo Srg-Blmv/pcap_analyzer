@@ -1,3 +1,0 @@
-alert http any any -> $HOME_NET any (msg: "[PT rules] SID 10000060 flowbits"; flow: only_stream; content: "<script"; nocase; content: "detach"; nocase; distance: 0; content: "setTimeout"; distance: 0; within: 50;  flowbits: set, 10000060; flowbits: noalert; sid: 10000060; rev: 1;)
-
-alert http any any -> $HOME_NET any (msg: "[PT rules] Possible MS16-063 IE11 Typed Array exploitation"; flowbits: isset, 10000060; flow: only_stream; content: "postMessage"; pcre: "/function[^(]+\(([^)]+)\)\s*\{.{0,50}postMessage\(\s*\x22[^\x22]*\x22\s*,\s*\"\*\"\s*,\s*\[\s*\1\s*\]\s*\)\s*\;.{0,50}/is"; reference: url, http://theori.io/research/jscript9_typed_array; reference: cwe, 199; reference: capec, 26; classtype: attempted-dos; metadata: ips; sid:10000061; rev: 1;)

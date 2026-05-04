@@ -1,2 +1,0 @@
-alert tcp any any -> $HOME_NET 502 (msg:"Schneider PLC(Quantumn) uses function code 90 for communications the Unity pro software/Set PLC CPU WRITEFILE";content:"|00 5a 01 32 00 01|";content:"|31 00|"; classtype:bad-unknown;sid:13371117;)
-alert tcp any any -> $HOME_NET 502 (msg:"Schneider PLC(Quantumn) uses function code 90 for communications the Unity pro software/Set PLC CPU READFILE";content:"|00 5a 01 35 00 01|";classtype:bad-unknown;sid:13371118;)

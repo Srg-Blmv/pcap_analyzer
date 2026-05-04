@@ -1,3 +1,0 @@
-alert tcp $HOME_NET any -> $HOME_NET 55555 (msg:"IosReq_OPEN command"; flow:to_server,established; content:"|00 01|"; offset:4; depth:2; classtype:protocol-command-decode; sid:80000081; rev:1; flowbits:set, iosreq_open; flowbits:noalert;)
-alert tcp $HOME_NET any -> $HOME_NET 55555 (msg:"IosReq_ACCESS command"; flow:to_server,established; content:"|00 05|"; classtype:protocol-command-decode; sid:80000082; rev:1; flowbits:set, iosreq_access; flowbits: isset, iosreq_open; flowbits: noalert;)
-alert tcp $HOME_NET any -> $HOME_NET 55555 (msg:"IosReq_SET command"; flow:to_server,established; pcre:"/\x00\x07\x00[\x00-\x07]/"; classtype:protocol-command-decode; sid:80000083; rev:1; flowbits:set, iosreq_set; flowbits: isset, iosreq_access;)

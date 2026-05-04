@@ -1,1 +1,0 @@
-alert tcp any any -> any 80 (msg:"BINOM3 read dir attempt"; content:"/~svgdir?path="; offset:3; depth:17; content:!"|0d 0a|"; within:128; flow:established,to_server,only_stream; classtype:attempted-dos; sid:30000047;)

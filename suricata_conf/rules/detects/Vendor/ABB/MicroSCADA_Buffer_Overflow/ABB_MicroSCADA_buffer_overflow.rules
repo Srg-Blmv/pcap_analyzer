@@ -1,1 +1,0 @@
-alert tcp any any -> $HOME_NET 12221 (msg:"Remote stack buffer overflow vulnerability in ABB MicroSCADA"; classtype:shellcode-detect; sid:13371119; flow:to_server,established; content:"EXECUTE|00|";depth: 12;offset: 4;nocase;)

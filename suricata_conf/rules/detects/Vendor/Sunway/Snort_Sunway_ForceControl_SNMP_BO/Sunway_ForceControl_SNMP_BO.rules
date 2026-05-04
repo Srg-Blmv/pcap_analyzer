@@ -1,1 +1,0 @@
-alert tcp any any -> $HOME_NET 2001 (msg:"SERVER-OTHER Sunway ForceControl SNMP NetDBServer stack buffer overflow attempt"; flow:established,to_server,no_stream; content:"|eb 50 eb 50 57 00|"; depth:6; reference:url,secunia.com/advisories/46146; reference:url,www.exploit-db.com/exploits/17885; classtype:shellcode-detect; sid:50000001; rev:1;)

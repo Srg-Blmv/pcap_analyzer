@@ -1,1 +1,0 @@
-alert tcp any any -> any 21 (msg:"BDU-2019-04553 EKRA 200 FTP Path Traversal Exploitation"; flow:to_server,established; content:"RETR"; nocase; depth:10; pcre:"/RETR\s+.*\.\.\//i"; reference:bdu,2019-04553; reference:url,bdu.fstec.ru/vul/2019-04553; classtype:attempted-admin; sid:90000021; rev:1;)

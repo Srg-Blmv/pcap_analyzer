@@ -1,1 +1,0 @@
-alert udp $EXTERNAL_NET any -> $HOME_NET any (msg: "ntpd 4.2.8p3 remote DoS"; content: "|6c 61 64 64 72 3d|"; content: !"|2c|"; within: 20; isdataat: 30,relative; reference: url, support.ntp.org/bin/view/Main/NtpBug2922; reference: cve, 2015-7855; metadata: updated_at 2019_07_25; classtype: attempted-dos; sid: 10000817; rev: 1; priority:4;)

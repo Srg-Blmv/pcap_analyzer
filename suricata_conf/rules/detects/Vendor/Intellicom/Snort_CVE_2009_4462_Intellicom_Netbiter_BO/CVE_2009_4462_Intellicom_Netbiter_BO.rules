@@ -1,1 +1,0 @@
-alert udp any any -> any 3250 (msg:"PROTOCOL-SCADA IntelliCom NetBiter config utility hostname overflow attempt"; flow:stateless; content:"hn"; nocase; isdataat:31,relative; pcre:"/^\s?=\s?[^\x3B]{31}/R"; classtype:shellcode-detect; reference:bugtraq,37325; reference:cve,2009-4462; reference:url,support.intellicom.se/showfile.cfm?FID=45; sid:50000002;)

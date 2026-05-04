@@ -1,2 +1,0 @@
-alert tcp any any -> any 44818 (sid:70000006; flow:to_server,established; msg:"Allen-Bradley MicroLogix 1400 CVE-2017-12092 - PCCC Change Mode to Program"; classtype:shellcode-detect;  content:"|4b 02 20 67 24 01 07 01 00 f2 0c 02 00 0f 00|"; offset: 19;  content:"|80 01|"; offset: 2;)
-alert tcp any any -> any 44818 (sid:70000007; flow:to_server,established; msg:"Allen-Bradley MicroLogix 1400 CVE-2017-12092 - PCCC write to memory module"; classtype:shellcode-detect; content:"|4b 02 20 67 24 01 07 01 00 f2 0c 02 00 0f 00|"; offset: 19; content:"|58 01 00 00 00|"; offset: 2;)

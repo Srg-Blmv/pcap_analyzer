@@ -1,1 +1,0 @@
-alert tcp any 54321 -> any any (msg:"CVE-2010-4741, Stack buffer overflow vulnerability in MOXA MDM Tool 2.1"; content:"|28 10 00 29|"; startswith; dsize:>1400; flow:to_client; classtype:attempted-admin; sid:90000009;)

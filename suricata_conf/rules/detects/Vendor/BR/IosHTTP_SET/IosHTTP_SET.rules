@@ -1,1 +1,0 @@
-alert http $HOME_NET any -> $HOME_NET 55595 (msg:"Writing the values of PV variables using the IosHTTP service SET command"; flow:to_server,established; content:"/iosys/json/set?"; http_uri; nocase; classtype:protocol-command-decode; sid:80000084; rev:1;)

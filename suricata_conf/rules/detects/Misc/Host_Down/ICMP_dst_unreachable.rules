@@ -1,1 +1,0 @@
-alert pkthdr any any -> any any (msg:"SURICATA ICMPv4 destination unreachable message without a flow"; decode-event:icmpv4.error_no_flow; sid:2200110; rev:1;)

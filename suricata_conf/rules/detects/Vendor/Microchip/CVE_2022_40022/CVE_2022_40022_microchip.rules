@@ -1,5 +1,0 @@
-# в адресации правила, в качестве узла назначения используется any any -> any any т. к. SyncServer S650 — это NTP-сервер, который может иметь внешний IP
-# content: "/controller/ping.php"; http_uri - обращение к уязвимому uri сервера  
-# content: "|63 75 72 72 65 6e 74 54 61 62 3d 70 69 6e 67 26|" - параметр запроса currentTab=ping
-# content: "|68 6f 73 74 6e 61 6d 65 3d 25 36 30|" - инъекция обратной кавычки ` в параметр hostname
-alert http any any -> any any (msg: "[PT ISIM] CVE-2022-40022 Microchip SyncServer S650 command injection"; flow: established, to_server; content: "POST"; nocase; http_method; content: "/controller/ping.php"; http_uri; nocase; content: "|63 75 72 72 65 6e 74 54 61 62 3d 70 69 6e 67 26|"; offset:257; depth:360; content: "|68 6f 73 74 6e 61 6d 65 3d 25 36 30|"; offset:257; depth:360; classtype: web-application-attack; sid: 13370023; rev: 1; priority:2; reference: url, https://sploitus.com/exploit?id=PACKETSTORM:172907; reference: cve,2022-40022;)

@@ -1,8 +1,0 @@
-alert tcp any any -> any 44818 (sid:70000009; msg:"RA_Legacy_1"; classtype:attempted-recon; content:"|01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00|"; offset: 0; depth: 16;)
-alert udp any any -> any 44818 (sid:70000010; msg:"RA_Legacy_1"; classtype:attempted-recon; content:"|01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00|"; offset: 0; depth: 16;)
-alert tcp any any -> any 44818 (sid:70000011; msg:"List_Services"; classtype:attempted-recon; content:"|04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00|"; offset: 0; depth: 16;)
-alert udp any any -> any 44818 (sid:70000012; msg:"List_Services"; classtype:attempted-recon; content:"|04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00|"; offset: 0; depth: 16;)
-alert tcp any any -> any 44818 (sid:70000013; msg:"List_Interfaces"; classtype:attempted-recon; content:"|64 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00|"; offset: 0; depth: 16;)
-alert udp any any -> any 44818 (sid:70000014; msg:"List_Interfaces"; classtype:attempted-recon; content:"|64 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00|"; offset: 0; depth: 16;)
-alert udp any any -> 255.255.255.255 44818 (sid:70000015; msg:"List_Identity"; classtype:network-scan; content:"|63 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00|"; offset: 0; depth: 16;)
-alert tcp any any -> any 44818 (sid:70000016; msg:"List_Identity"; classtype:network-scan; content:"|63 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00|"; offset: 0; depth: 16;)

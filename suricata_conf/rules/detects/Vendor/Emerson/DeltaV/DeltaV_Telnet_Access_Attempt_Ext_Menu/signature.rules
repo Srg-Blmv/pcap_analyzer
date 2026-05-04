@@ -1,1 +1,0 @@
-alert tcp any any -> any [23,705,706,750,751,600,602,604,606] (msg:"PLC Attempt to access DeltaV extended TELNET menu"; content:"setpriv"; nocase; classtype: misc-activity; sid:30000155; rev:1;)

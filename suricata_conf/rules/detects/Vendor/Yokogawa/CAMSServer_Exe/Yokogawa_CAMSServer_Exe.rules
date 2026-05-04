@@ -1,1 +1,0 @@
-alert tcp any any -> any 8819 (msg:"Yokogawa CAMSServer.exe service "; flow: established, no_stream; classtype:denial-of-service; sid:20000005; content:"|41 33 be cc|"; offset: 0; depth: 4;)

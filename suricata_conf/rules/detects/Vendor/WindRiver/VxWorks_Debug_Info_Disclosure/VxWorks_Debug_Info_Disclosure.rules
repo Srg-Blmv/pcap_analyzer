@@ -1,1 +1,0 @@
-alert udp any any -> $HOME_NET 17185 (content: "|00 00 00 02 55 55 55 55|"; depth: 16; msg:"VxWorks Debug Service Information Disclosure Attempt"; reference:url,digitalbond.com/tools/quickdraw/vulnerability-rules; sid:40000001; rev:2; classtype: attempted-recon; priority:2;)

@@ -1,1 +1,0 @@
-alert udp $HOME_NET 137 -> $EXTERNAL_NET 137 (msg: "[PT Open] BadTunnel NBSTAT to external network"; flow: no_stream; content: "|00 21 00 01|"; offset: 46; depth: 4; flowbits: noalert; reference: url, xlab.tencent.com/en/2016/06/17/BadTunnel-A-New-Hope/; reference: cve, 2016-3236; metadata: cwe-345, capec-141; classtype: attempted-recon; sid: 10000054; rev:1;)

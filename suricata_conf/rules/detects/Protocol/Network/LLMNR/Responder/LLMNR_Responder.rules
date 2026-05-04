@@ -1,1 +1,0 @@
-alert udp $EXTERNAL_NET 5355 -> $HOME_NET any (msg:"Microsoft Windows Potential LLMNR Substitution"; content:"|00 01 00 01 00 00|"; depth:6; offset:4; classtype:misc-activity; sid:13371109; rev:1;)

@@ -1,1 +1,0 @@
-alert http any any -> any any (msg:"MOXA CVE-2019-10963 - Unauthorized Log Archive Access Attempt"; flow:established,to_server; content:"GET"; nocase; http_method; content:"/MOXA_All_LOG.tar.gz"; nocase; http_uri; classtype:attempted-admin; sid:90000012; rev:1;)

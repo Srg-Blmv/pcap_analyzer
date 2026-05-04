@@ -1,1 +1,0 @@
-alert tcp any [23,705,706,750,751,600,602,604,606] -> any any (msg:"PLC Access to DeltaV over TELNET"; flow:from_server,established,only_stream; content:"Maintenance Port"; content:"1. "; content:"2. "; classtype: misc-activity; sid:30000152; rev:1;)

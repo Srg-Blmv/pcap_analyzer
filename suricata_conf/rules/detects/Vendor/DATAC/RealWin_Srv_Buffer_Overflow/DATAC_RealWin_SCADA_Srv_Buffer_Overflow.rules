@@ -1,1 +1,0 @@
-alert tcp any any -> $HOME_NET 910 (msg:"DATAC RealWin SCADA Server Buffer Overflow"; classtype:shellcode-detect; sid:13371130; content:"|10 23 54 67 00 08 00 00 e3 77 0a 00 05 00 04 00 00 00|"; content:"|40 40 40 00|"; distance:1;)

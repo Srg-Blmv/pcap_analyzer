@@ -1,2 +1,0 @@
-alert udp any any -> any 5000 (sid:70000031; msg:"mcd_get_state"; classtype:attempted-recon; content:"get_state("; offset: 0; depth: 10; content:")"; distance:1;)
-alert udp any 5000 -> any any (sid:70000032; msg:"mcd_state"; classtype:successful-recon-limited; content:"state("; offset: 0; depth: 6;)

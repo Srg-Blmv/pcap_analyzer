@@ -1,1 +1,0 @@
-alert http any any -> any 80 (msg:"advantech_webaccess_dbvisitor_sqli"; content:"schemas.xmlsoap.org/soap/envelope"; content:"tempuri.org"; distance:1; content:"union all select "; content:" + Password + "; content:" + Password2 + "; content:"from BAUser where"; distance:1; classtype:attempted-recon; sid:13371110;)

@@ -1,1 +1,0 @@
-alert tcp $HOME_NET any -> $HOME_NET 55502 (sid:80000096; rev:1; msg:"[PT Rules][ISIM] Incorrect TBREQ_store command parameters leading to a memory leak"; content:"|00 00 00 13|"; byte_test:4,<,0x00000010,-8,relative; flow:to_server; classtype:attempted-dos;)

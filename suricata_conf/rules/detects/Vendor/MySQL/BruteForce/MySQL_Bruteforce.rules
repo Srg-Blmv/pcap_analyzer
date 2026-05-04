@@ -1,1 +1,0 @@
-alert tcp any 3306 -> any any (msg:"SQL database password brute-force attempt over MySQL"; flow:to_client,established; content:"|ff 15 04 23 32 38 30 30 30 41 63 63 65 73 73 20 64 65 6e 69 65 64|"; classtype:default-login-attempt; sid:90000005; )

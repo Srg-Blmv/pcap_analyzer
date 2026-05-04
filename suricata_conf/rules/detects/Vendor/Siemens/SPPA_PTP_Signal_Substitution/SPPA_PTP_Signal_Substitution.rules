@@ -1,1 +1,0 @@
-alert udp $HOME_NET [20200:20210] -> any [20200:20210] (msg: "SPPA T-3000 PTP Telegram signal"; content: "|00 02 01 01 00 01 00 00|"; metadata: created 05_02_2020; reference:url,cert-portal.siemens.com/productcert/pdf/ssa-451445.pdf; classtype: misc-activity; sid:80000022; rev: 1;)

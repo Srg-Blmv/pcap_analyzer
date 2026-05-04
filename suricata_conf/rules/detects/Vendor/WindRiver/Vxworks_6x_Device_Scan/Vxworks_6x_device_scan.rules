@@ -1,1 +1,0 @@
-alert udp any any -> any 17185 (msg:"VxWorks scan request"; content:"|0000000000000000|"; offset:0; depth: 8; classtype:network-scan; sid: 13375151; )

@@ -1,1 +1,0 @@
-alert tcp any any -> any 80 (msg:"Sunway Force Control SCADA httpsrv.exe Remote Overflow"; content:"GET"; http_method; content:"eb069090"; offset: 3150; content:"fa379771"; distance:0; within:8; classtype:shellcode-detect; sid:50000007; rev:1;)

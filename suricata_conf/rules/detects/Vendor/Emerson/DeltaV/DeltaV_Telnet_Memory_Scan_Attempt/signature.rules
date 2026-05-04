@@ -1,2 +1,0 @@
-alert tcp any 23 -> any any (msg:"PLC Access to DeltaV Scan Memory over TELNET"; content:"Scan Memory"; nocase;  classtype: misc-activity; sid:30000161; rev:1;)
-#alert tcp any any -> any 23 (msg:"PLC  DeltaV Scan Memory request over TELNET"; flow:to_server,established,only_stream; content:"0x"; nocase; flowbit:isset, memmenu; classtype: misc-activity; sid:30000161; rev:1;)

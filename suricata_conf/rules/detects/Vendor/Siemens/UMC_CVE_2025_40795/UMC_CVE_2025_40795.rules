@@ -1,1 +1,0 @@
-alert tcp any any -> any 80 (msg:"CVE-2025-40795 Siemens SIMATIC PCS neo UMC Buffer Overflow"; flow:to_server,established; content:"POST"; content:"/UMC/controller"; content:"payload"; dsize:>2048; reference:cve,2025-40795; classtype:attempted-admin; sid:500000110; rev:1;)

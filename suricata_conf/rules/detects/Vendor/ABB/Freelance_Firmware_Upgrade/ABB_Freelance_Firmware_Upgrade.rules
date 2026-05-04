@@ -1,1 +1,0 @@
-alert tcp any any -> any 9991 (msg: "ABB Freelance Firmware Upgrade"; content: "|42 6f 6f 74 6c 6f 61 64 65 72|"; content: "|53 74 61 72 74|";  distance: 0;  classtype: bad-unknown; sid: 90000004; rev: 1;)

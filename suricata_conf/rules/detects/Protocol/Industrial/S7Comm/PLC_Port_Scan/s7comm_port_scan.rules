@@ -1,2 +1,0 @@
-alert tcp any any -> any 102 (sid:13377658; msg:"Try to connect to Siemens S7Comm TCP/102 port"; flags:S; flow:not_established, to_server; classtype:tcp-connection;)
-alert tcp any 102 -> any any (sid:13377659; msg:"Try to connect to Siemens S7Comm TCP/102 port"; flags:SA; classtype:tcp-connection;)

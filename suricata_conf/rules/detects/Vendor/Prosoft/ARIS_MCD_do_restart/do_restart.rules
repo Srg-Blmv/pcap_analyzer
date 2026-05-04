@@ -1,2 +1,0 @@
-alert udp any any -> any 5000 (sid:70000029; msg:"mcd_do_restart"; classtype:misc-activity; content:"do_restart("; offset: 0; depth: 11; content:","; distance:1; within:2;content:","; distance:1; content:")"; distance:1;)
-alert udp any 5000 -> any any (sid:70000030; msg:"mcd_restart_now"; classtype:misc-attack; content:"restart_now("; offset: 0; depth: 12;)

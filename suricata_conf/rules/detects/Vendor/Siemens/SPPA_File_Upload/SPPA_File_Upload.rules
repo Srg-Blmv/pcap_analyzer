@@ -1,1 +1,0 @@
-alert http any any -> any 8080 (msg: "SPPA T-3000 File upload detected"; flow: established, to_server; content: "/orion/servlet/FileUpload"; http_uri; content: "POST"; http_method; metadata: created 22_01_2020; reference:cve,2019-18320; reference:url,cert-portal.siemens.com/productcert/pdf/ssa-451445.pdf; classtype: trojan-activity; sid:80000019; rev: 1;)

@@ -1,1 +1,0 @@
-alert tcp any any -> any 20222 (msg:"SCADA CitectSCADA ODBC buffer overflow attempt"; flow:established; content:"|02 00 00 00 00|"; depth:9; byte_test:4,>=,225,0,relative; reference:cve,2008-2639; classtype:shellcode-detect; sid:30000013;)

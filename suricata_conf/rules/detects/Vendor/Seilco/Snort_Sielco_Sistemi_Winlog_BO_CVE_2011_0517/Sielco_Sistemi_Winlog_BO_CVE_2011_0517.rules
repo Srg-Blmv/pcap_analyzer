@@ -1,2 +1,0 @@
-alert tcp any any -> $HOME_NET 46823 (msg:"Sielco Sistemi Winlog Pro stack buffer overflow attempt"; flow:to_server,established,no_stream; content:"|02 01 01|"; depth:3; isdataat:70,relative; metadata:policy balanced-ips drop, policy security-ips drop; reference:bugtraq,45813; reference:cve,2011-0517; reference:url,osvdb.org/show/osvdb/70418; classtype:shellcode-detect; sid:50000003; rev:1;)
-

@@ -1,1 +1,0 @@
-alert tcp any any -> any 4000 (msg:"Login as admin attempt via Moxa proprietary protocol 1"; content:"|00 61 64 6d 69 6e 00 00 00 00 00 00 00 00 00 00 00|"; depth:17; dsize:33; isdataat:!17, relative; threshold: type threshold, track by_dst, count 20, seconds 60; classtype:attempted-admin; sid:30000039;)

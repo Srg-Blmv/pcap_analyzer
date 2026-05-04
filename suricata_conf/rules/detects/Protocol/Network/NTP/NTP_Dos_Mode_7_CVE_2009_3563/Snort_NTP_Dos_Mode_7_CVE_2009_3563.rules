@@ -1,2 +1,0 @@
-alert udp any 123 -> any 123 (sid:20000001; msg:"NTP Dos mode 7"; content:"|17|"; offset:0; depth:1; classtype: attempted-dos;)
-alert udp any 123 -> any 123 (sid:20000002; msg:"NTP Dos mode 7"; content:"|97000000|"; offset:0; depth:4; classtype: attempted-dos;)

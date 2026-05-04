@@ -1,1 +1,0 @@
-alert tcp any any -> any 502 (msg:"SCADA MODBUS - CVE-2018-7843 - Detected"; flow:established,to_server; content:"|FF FF 00 00 00 09 01 5A 00 20|"; depth:10; content:"|00 00 00 00 01 00|"; distance:1; within:8; reference:cve,2018-7843; classtype:denial-of-service; sid:500000111; rev:1;)

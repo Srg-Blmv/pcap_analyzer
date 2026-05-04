@@ -1,1 +1,0 @@
-alert tcp any 23 -> any any (msg:"Successful access to DeltaV extended TELNET menu"; flow:from_server,established,only_stream; content:"2. Ethernet Statistics"; nocase; classtype: misc-activity; sid:30000153; rev:1;)

@@ -1,2 +1,0 @@
-alert udp any any -> any 123 (sid:20000003; msg:"NTP REQ_MON_GETLIST"; content:"|2a|"; offset:3; depth:1; classtype: denial-of-service;)
-alert udp any 123 -> any any (sid:20000004; msg:"NTP REQ_MON_GETLIST"; content:"|2a|"; offset:3; depth:1; classtype: denial-of-service;)

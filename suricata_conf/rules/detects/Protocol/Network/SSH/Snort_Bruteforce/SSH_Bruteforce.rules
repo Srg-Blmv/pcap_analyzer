@@ -1,1 +1,0 @@
-alert tcp any any -> $HOME_NET $SSH_PORTS (msg:"SSH brute force attempt"; flow:to_server,established; content:"SSH-"; depth:4; detection_filter:track by_src, count 5, seconds 60; classtype:misc-activity; sid:40000010; rev:2;)

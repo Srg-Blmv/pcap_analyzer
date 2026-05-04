@@ -1,2 +1,0 @@
-alert udp any any -> $HOME_NET 20034 (msg:"DAQFactory NETB protcol stack overflow attempt"; flow:to_server; dsize:>370; content:"NETB"; depth:4; content:"|00|"; within:6; distance:230; metadata:policy balanced-ips drop, policy connectivity-ips drop, policy security-ips drop; reference:cve,2011-3492; reference:url,aluigi.altervista.org/adv/daqfactory_1-adv.txt; classtype:shellcode-detect; sid:50000004; rev:1;)
-

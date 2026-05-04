@@ -1,3 +1,0 @@
-alert udp any any -> any 5000 (sid:70000035; msg:"mcd_get_fw_from_exploit"; classtype:misc-attack; pcre:"/^get_fw_from\([0-9]+\,[a-zA-Z0-9]+\,[a-zA-Z:_@/]*\;/";)
-alert udp any any -> any 5000 (sid:70000025; msg:"mcd_get_fw_from"; classtype:misc-activity; content:"get_fw_from("; offset: 0; depth: 12; content:","; distance:1; within:2;content:","; distance:1;  content:","; distance:1; content:","; distance:1; content:")"; distance:1;)
-alert udp any 5000 -> any any (sid:70000026; msg:"mcd_download_started"; classtype:misc-activity; content:"download_started("; offset: 0; depth: 17;)
