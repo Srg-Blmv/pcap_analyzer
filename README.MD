@@ -14,7 +14,6 @@
 ``` 
 cd pcap_analyzer
 mkdir data
-mkdir zeek_conf
 docker run -d --name suricata -v ./data:/tmp -v ./suricata_conf/:/home/suricata jasonish/suricata:7.0.11 suricata -c /home/suricata/conf/suricata.yaml --unix-socket
 docker pull zeek/zeek:8.0 
 pip3 install -r requirements.txt
