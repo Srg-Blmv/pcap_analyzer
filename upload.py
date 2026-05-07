@@ -46,7 +46,7 @@ uploaded_file = st.file_uploader(
 
 
 
-
+# закладка под агента
 def summaty_csv(name_pcap_dir):
     # alert sammary:
     file_suricata = f'{name_pcap_dir}/eve.json'

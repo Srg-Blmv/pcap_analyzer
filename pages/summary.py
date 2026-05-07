@@ -513,7 +513,7 @@ if select_folder != None:
 
 
    
-    
+    #zeel IOC
 
     zeek_intel = zeek_get_alerts(folder_zeek)
     if zeek_intel is not None:

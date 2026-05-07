@@ -1,20 +1,20 @@
 # 🛡 PCAP Analyzer 
 
-### Network dump analysis using: 
+### Анализ происходит через: 
 - suricata
 - zeek
 - nDPI
 
-### Network Map Visualizer
+### Карта на основе данных из лога:
 - zeek conn.log
 
 
-### Installation
+### Установка
 
 ``` 
 cd pcap_analyzer
 mkdir data
-docker run -d --name suricata -v ./data:/tmp -v ./suricata_conf/:/home/suricata jasonish/suricata:7.0.11 suricata -c /home/suricata/conf/suricata.yaml --unix-socket
+docker run -d --name suricata -v ./data:/tmp -v ./suricata_conf/:/home/suricata jasonish/suricata:7.0.11 suricata -c /home/suricata/suricata.yaml --unix-socket
 docker pull zeek/zeek:8.0 
 pip3 install -r requirements.txt
 cd zeek_conf  && git clone https://github.com/CriticalPathSecurity/Zeek-Intelligence-Feeds
@@ -22,7 +22,7 @@ cd Zeek-Intelligence-Feeds && sed -i 's|/usr/local/zeek/share/zeek/site/|/opt/|g
 
 streamlit run upload.py
 
-# enable source rules
+# включаем наборы правил
 docker exec suricata suricata-update enable-source et/open && \
 docker exec suricata suricata-update enable-source abuse.ch/sslbl-ja3 && \
 docker exec suricata suricata-update enable-source stamus/lateral && \
@@ -33,7 +33,12 @@ docker exec suricata suricata-update enable-source aleksibovellan/nmap
 
 docker exec suricata suricata-update 
 ```
-Use only lowercase letters, numbers, underscores, hyphens and one dot before extension — no spaces or special characters (!@#$%^&*()+=[]{}|;:'",<>?/~)
+Для загрузки файлова больше 250mb
+
+``` 
+python ./bigfile_upload.py  ./sample.pcap 
+```
+
 
 
 
