@@ -17,7 +17,7 @@ st.html("<hr></hr>")
 
 def graf(connections, name):
     dot = graphviz.Digraph()
-    dot.attr(label=name, labelloc='t', rankdir='TB',  rank='same')
+    dot.attr(label=name, labelloc='t', rankdir='LR',  rank='same')
     for _, row in connections.iterrows():
         if len(row['id.resp_p']) > 3:
             port = (
@@ -191,10 +191,15 @@ if select_folder != None:
 
 
     if static_graf:
+        
         dot_tcp = graf(gr_tcp, "IPv4 TCP")
         dot_udp = graf(gr_udp, "IPv4 UDP")
-
+        st.header("TCP")
+        st.html("<hr></hr>")
         st.graphviz_chart(dot_tcp)
+
+        st.header("UDP")
+        st.html("<hr></hr>")
         st.graphviz_chart(dot_udp)
 
     else:
