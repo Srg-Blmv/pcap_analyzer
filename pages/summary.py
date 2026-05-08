@@ -138,7 +138,7 @@ def ndpi(file):
 
     return lines, df_protocols
 
-
+# Public IP
 def search_public_ip(ip_addrs):
     # Search public IP
     public_ip = []
@@ -152,8 +152,17 @@ def search_public_ip(ip_addrs):
             and not w.is_loopback
         ):
             with geoip2.database.Reader("db/GeoLite2-City.mmdb") as reader:
-                response = reader.city(w)
-
+                try:
+                    response = reader.city(w)
+                except Exception as ex:
+                    public_ip.append(
+                    {
+                        "ip": str(w),
+                        "сity": "not found in db",
+                        "country": "404",
+                        "registered_country": "404",
+                    }
+                    )
                 try:
                     city = response.city.names["en"]
                 except Exception:
