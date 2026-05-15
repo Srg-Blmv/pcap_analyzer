@@ -73,11 +73,14 @@ if uploaded_file is not None:
         path_dir = f'{LOG_DIR}/{name_pcap_dir}'
         full_path_file = f'{path_dir}/{file_name}'
         os.mkdir(path_dir)
-
         with open(full_path_file, "wb") as f:
             f.write(uploaded_file.getvalue())
         st.success('file save')
         
+
+        # summary
+        os.mkdir(f'{path_dir}/summary')
+
         # suricata
         os.mkdir(f'{path_dir}/suricata')
         with st.spinner("Suricata run, Wait for it...", show_time=True):
