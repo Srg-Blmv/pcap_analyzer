@@ -601,68 +601,69 @@ if select_folder != None:
             st.badge(f"suricata anomaly: {len(suricata_anomaly)}")
             st.dataframe(suricata_anomaly)
     
-    
 
 
-    llm_answer = f'{LOG_DIR}/{select_folder}/answer_llm.md'
-    if st.button("Спросить у LLM gemma3"):
-        uniq_alert.drop("payload", axis=1, inplace=True)
-        js = uniq_alert.to_json()
-        prompt = f"""
-                Ты — эксперт по анализу сетевых инцидентов и безопасности.
-                Перед тобой таблица с алертами Suricata. Каждая строка — один алерт.
+    if uniq_alert is not None or zeek_intel is not None:
 
-                json уникальных алертов suricata:
-                {js}
-
-                Задача:
-                1. Выдели наиболее подозрительные алерты (по типу атаки, IP‑адресам, частоте и т.п.).
-                2. Сгруппируй инциденты по:
-                - IP‑источникам (src_ip),
-                - IP‑назначениям (dst_ip),
-                - типам событий / категориям (msg, category).
-                3. Укажи, какие IP / диапазоны выглядят настораживающе и почему.
-                4. Дай краткие рекомендации: какие алерты стоит проверить вручную, какие IP/сети можно заблокировать.
-
-                Формат ответа:
-                - Сначала короткий обзор (3–5 пунктов).
-                - Затем детализированный разбор по разделам:
-                - “Топ опасных алертов”,
-                - “Топ подозрительных IP‑источников”,
-                - “Связи между типами алертов и IP”,
-                - “Рекомендации расследованию только на основе pcap файла suricata logs и zeek logs”.
-
-                Отвечай только на русском языке.
-                Не пиши вступлений типа «Я готов, спрошу, какие у вас приоритеты…».
-                Отвечай сразу по делу.
-                """
-            # формируем команду
-        cmd = [
-                "docker",
-                "model",
-                "run",
-                "ai/gemma3:4B-Q4_K_M",
-            ]
-        # передаём prompt как строку‑аргумент (он будет считаться позиционным аргументом)
-        cmd.append(prompt)
-
-        try:
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-            with open(llm_answer, 'w', encoding='utf-8') as file:
-                file.write(result.stdout)
-
-        except subprocess.CalledProcessError as e:
-            st.code(f"Ошибка AI: {e.stderr or e.stdout}")
+        llm_answer = f'{LOG_DIR}/{select_folder}/answer_llm.md'
 
 
-    if Path(llm_answer).is_file():
-        with open(llm_answer, 'r', encoding='utf-8') as f:
-            st.markdown(f.read())
+        if st.button("Спросить у LLM gemma3"):
+            uniq_alert.drop("payload", axis=1, inplace=True)
+            suricat_js = uniq_alert.to_json()
+            zeek_intel_js = uniq_alert.to_json()
+
+            prompt = f"""
+                    Ты — эксперт по анализу сетевых инцидентов и безопасности.
+                    Перед тобой таблица с алертами Suricata и zeek  Intel, Каждая строка — один алерт, таблица может быт пустой. просто игнорируй. 
+
+                    json уникальных алертов suricata:
+                    {suricat_js}
+                    json лог zeek intel {zeek_intel_js}
+
+                    Задача:
+                    1. дать описание алертом 
+
+                    Формат ответа:
+                    - Сначала короткий обзор.
+                    - Связи между типами алертов и IP,
+
+
+                    Отвечай только на русском языке.
+                    Не пиши вступлений типа «Я готов, спрошу, какие у вас приоритеты…».
+                    Отвечай сразу по делу.
+                    """
+                # формируем команду
+            cmd = [
+                    "docker",
+                    "model",
+                    "run",
+                    "ai/gemma3:4B-Q4_K_M",
+                ]
+            # передаём prompt как строку‑аргумент (он будет считаться позиционным аргументом)
+            cmd.append(prompt)
+
+            try:
+                result = subprocess.run(
+                    cmd,
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                )
+                with open(llm_answer, 'w', encoding='utf-8') as file:
+                    file.write(result.stdout)
+
+            except subprocess.CalledProcessError as e:
+                st.code(f"Ошибка AI: {e.stderr or e.stdout}")
+
+
+
+
+        
+        if Path(llm_answer).is_file():
+            with open(llm_answer, 'r', encoding='utf-8') as f:
+                st.markdown(f.read())
+
 
 else:
     pass
