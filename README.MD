@@ -11,6 +11,10 @@
 
 ### Установка
 
+```
+для ndpi нужена библиотека
+apt install libpcap-dev
+```
 ``` 
 cd pcap_analyzer
 mkdir data
