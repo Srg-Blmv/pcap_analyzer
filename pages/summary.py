@@ -458,12 +458,8 @@ def ftp_files(folder_zeek):
             data = [json.loads(line.strip()) for line in f if line.strip()]
         # Создаём DataFrame
         df_ftp_log = pd.DataFrame(data)
-        print("#" * 40)
-        print(df_ftp_log)
         # оставляем только нужные данные а ftp.logs .reindex это если не все поля присуствуют в логе  и дропаем строки если нет fuid
         df_ftp_log = df_ftp_log.reindex(columns=ftp_cols).dropna(subset=['fuid'])
-        print("#" * 40)
-        print(df_ftp_log)
         # берём только ftp из files.log и сразу отшибаем не нужные столбцы
         df_files_http = df_files[df_files['source'] == 'FTP_DATA'].reindex(columns=files_coils_http)
         # делаем join
@@ -473,7 +469,6 @@ def ftp_files(folder_zeek):
             right_on='fuid',
             how='inner'
         )
-        print(result_df)
         uniq_mime_type = result_df['mime_type'].explode().unique()
         st.badge(f"ftp Zeek: {len(result_df)}")
         st.badge("http uniq mime types:", color="orange")
