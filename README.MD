@@ -20,7 +20,7 @@ cd pcap_analyzer
 mkdir data
 docker run -d --name suricata -v ./data:/tmp -v ./suricata_conf/:/home/suricata jasonish/suricata:7.0.11 suricata -c /home/suricata/suricata.yaml --unix-socket
 docker pull zeek/zeek:8.0 
-docker model pull ai/gemma3:4B-Q4_K_M
+
 pip3 install -r requirements.txt
 cd zeek_conf  && git clone https://github.com/CriticalPathSecurity/Zeek-Intelligence-Feeds
 cd Zeek-Intelligence-Feeds && sed -i 's|/usr/local/zeek/share/zeek/site/|/opt/|g' main.zeek
@@ -38,12 +38,13 @@ docker exec suricata suricata-update enable-source aleksibovellan/nmap
 
 docker exec suricata suricata-update 
 ```
-Для загрузки файлова больше 250mb
+Для загрузки файлова больше 210mb
 
 ``` 
 python ./bigfile_upload.py  ./sample.pcap 
 ```
 
 
-
-
+Добавил в nDPIreader протоколы:
+1) Fanuc Focas2
+2) LCV2

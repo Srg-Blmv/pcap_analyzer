@@ -36,7 +36,7 @@ if 'key' not in st.session_state:
     st.session_state.key = None
 
 uploaded_file = st.file_uploader(
-    "Choose a file", type=["pcapng", "pcap"], max_upload_size=250)
+    "Choose a file", type=["pcapng", "pcap"], max_upload_size=210)
 
 
 
@@ -76,7 +76,7 @@ if uploaded_file is not None:
         with open(full_path_file, "wb") as f:
             f.write(uploaded_file.getvalue())
         st.success('file save')
-        
+
 
         # summary
         os.mkdir(f'{path_dir}/summary')
@@ -85,9 +85,9 @@ if uploaded_file is not None:
         os.mkdir(f'{path_dir}/suricata')
         with st.spinner("Suricata run, Wait for it...", show_time=True):
             # os.system(f"docker run  --rm -v {os.path.abspath('data')}:/tmp  -v {os.path.abspath('suricata_conf')}:/home/suricata jasonish/suricata:7.0.11 \
-            #     suricata -c /home/suricata/conf/suricata.yaml -s /home/suricata/rules/ -k none -r /tmp/{name_pcap_dir}/{file_name} --runmode=autofp -l /tmp/{name_pcap_dir}/suricata/ ")  
+            #     suricata -c /home/suricata/conf/suricata.yaml -s /home/suricata/rules/ -k none -r /tmp/{name_pcap_dir}/{file_name} --runmode=autofp -l /tmp/{name_pcap_dir}/suricata/ ")
             os.system(f"docker exec  suricata  suricatasc -c  'pcap-file /tmp/{name_pcap_dir}/{file_name} /tmp/{name_pcap_dir}/suricata/'   /var/run/suricata/suricata-command.socket")
-         
+
         st.success('suricata done')
 
         # zeek
@@ -98,19 +98,19 @@ if uploaded_file is not None:
                 f'docker run --rm -v {os.path.abspath("data")}:/pcap  -v {os.path.abspath("zeek_conf")}:/opt   zeek/zeek:8.0  bash -c "cd /pcap/{name_pcap_dir}/zeek && zeek -C -r ../{file_name}  /opt/conf.zeek  LogAscii::use_json=T"')
         st.success('zeek done')
 
-        
+
         # ndpi
         os.mkdir(f'{path_dir}/ndpi')
         with st.spinner("nDPI run, Wait for it...", show_time=True):
             os.system(
                 f'{os.path.abspath("ndpi")}/ndpiReader -i {full_path_file} -d -F -t -K json -k {path_dir}/ndpi/ndpi.json > {path_dir}/ndpi/ndpi_summary.log 2>&1')
         st.success('ndpi done')
-        
+
 
 
         st.session_state.key = name_pcap_dir
 
 
-        
+
     except FileExistsError:
         st.error('file already exists')

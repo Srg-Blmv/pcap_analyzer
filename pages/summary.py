@@ -85,14 +85,25 @@ def zeek(folder):
         uniq_ip = None
 
 
+
+
+
     if dns_log.is_file():
         with open(dns_log) as f:
-            data=[]
-            for line in f:
-                data.append(json.loads(line))
+            data = [json.loads(line) for line in f]   # список словарей
         df = pd.json_normalize(data)
-        # uniq_dns  = df.loc[df['qtype_name'] != 'NIMLOC', ['query', 'qtype_name']]
-        uniq_dns = df[['query', 'qtype_name']].drop_duplicates()
+
+        # Все поля, которые нас интересуют
+        target_cols = ['query', 'qtype_name', 'rcode_name']
+
+        # Для каждого столбца, если его нет в DataFrame – добавляем с NaN
+        for col in target_cols:
+            if col not in df.columns:
+                df[col] = None   # или np.nan, если импортирован numpy
+
+        # Теперь берём только нужные колонки и убираем дубликаты по ним
+        uniq_dns = df[target_cols].drop_duplicates()
+
     else:
         uniq_dns = None
     return  uniq_ip, uniq_dns
@@ -129,11 +140,11 @@ def ndpi(file):
             if not line.strip():  # пустая строка - конец секции
                 break
 
-            match = re.search(r"\s+(\S+)\s+packets:\s+(\d+)", line)
+            match = re.search(r"^\s*(\S+).*\bflows:\s+(\d+)", line)
             if match:
                 protocol = match.group(1)
-                packets = int(match.group(2))
-                protocols.append({"protocol": protocol, "packets": packets})
+                flows = int(match.group(2))
+                protocols.append({"protocol": protocol, "flows": flows})
 
     # Search public IP
     df_protocols = pd.DataFrame(protocols)
@@ -196,14 +207,14 @@ def search_public_ip(ip_addrs):
 def ndpi_protocol_pie(protocols, col):
     # DPI Protocols
     height = "400px"
-    protocols_sorted = protocols.sort_values('packets', ascending=True)
+    protocols_sorted = protocols.sort_values('flows', ascending=True)
 
     if len(protocols) > 10:
         height = "600px"
         fig = px.bar(
-            protocols.sort_values('packets'),
+            protocols.sort_values('flows'),
             y='protocol',
-            x='packets',
+            x='flows',
             orientation='h',
             title='nDPI',
             height=600,
@@ -225,7 +236,7 @@ def ndpi_protocol_pie(protocols, col):
             "legend": {"orient": "vertical", "left": "left", },
             "series": [
                 {
-                    "name": "packets",
+                    "name": "flows",
                     "type": "pie",
                     "radius": "70%",
                     "avoidLabelOverlap": True,
@@ -241,7 +252,7 @@ def ndpi_protocol_pie(protocols, col):
                     "labelLine": {"show": True},
                     "data": [
                         {
-                            "value": row['packets'],
+                            "value": row['flows'],
                             "name": f"{(row['protocol'])}"
                         }
                         for _, row in protocols_sorted.iterrows()
@@ -547,7 +558,7 @@ if select_folder != None:
     if dns is not None:
         with col1_dns:
             st.badge(f"DNS: {len(dns)}")
-            st.caption("Уникальны доменные имена  (query + qtype_name)")
+            st.caption("Уникальны доменные имена  (query + qtype_name + rcode_name)")
             st.dataframe(dns, hide_index=True)
 
     # Public IP
@@ -612,72 +623,6 @@ if select_folder != None:
             st.badge(f"suricata anomaly: {len(suricata_anomaly)}")
             st.dataframe(suricata_anomaly)
 
-
-
-    if uniq_alert is not None or zeek_intel is not None:
-
-        llm_answer = f'{LOG_DIR}/{select_folder}/answer_llm.md'
-        if st.button("Спросить у LLM gemma3"):
-            if uniq_alert is not None:
-                uniq_alert.drop("payload", errors="ignore")
-                suricat_js = uniq_alert.to_json()
-            else:
-                suricat_js = []
-            if zeek_intel is not None:
-                zeek_intel_js = zeek_intel.to_json()
-            else:
-                zeek_intel_js = []
-
-            prompt = f"""
-                    Ты — эксперт по анализу сетевых инцидентов и безопасности.
-                    Перед тобой таблица с алертами Suricata и zeek  Intel, Каждая строка — один алерт, таблица может быт пустой. просто игнорируй.
-
-                    json уникальных алертов suricata: {suricat_js}
-                    json лог zeek intel {zeek_intel_js}
-
-                    Задача:
-                    1. дать описание алертом
-
-                    Формат ответа:
-                    - Сначала короткий обзор.
-                    - Связи между типами алертов и IP,
-
-                    Отвечай только на русском языке.
-                    Не пиши вступлений типа «Я готов, спрошу, какие у вас приоритеты…».
-                    Отвечай сразу по делу.
-                    """
-                # формируем команду
-            cmd = [
-                    "docker",
-                    "model",
-                    "run",
-                    "ai/gemma3:4B-Q4_K_M",
-                ]
-            # # передаём prompt как строку‑аргумент (он будет считаться позиционным аргументом)
-            # cmd.append(prompt)
-
-            try:
-                result = subprocess.run(
-                    cmd,
-                    input=prompt,
-                    capture_output=True,
-                    text=True,
-                    check=True,
-                    encoding="utf-8"
-                )
-                with open(llm_answer, 'w', encoding='utf-8') as file:
-                    file.write(result.stdout)
-
-            except subprocess.CalledProcessError as e:
-                st.code(f"Ошибка AI: {e.stderr or e.stdout}")
-
-
-
-
-
-        if Path(llm_answer).is_file():
-            with open(llm_answer, 'r', encoding='utf-8') as f:
-                st.markdown(f.read())
 
 
 else:
