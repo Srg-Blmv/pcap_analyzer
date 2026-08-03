@@ -12,8 +12,7 @@
 ### Установка
 
 ```
-для ndpi нужна библиотека
-apt install libpcap-dev
+apt install libpcap-dev tshark
 ```
 ``` 
 cd pcap_analyzer
@@ -48,3 +47,5 @@ python ./bigfile_upload.py  ./sample.pcap
 Добавил в nDPIreader протоколы:
 1) Fanuc Focas2
 2) LCV2
+
+tshark на больших файлах очень медленно из за резолва mac

@@ -26,7 +26,6 @@ with st.container(horizontal=True):
             #os.system(f"git -C ./zeek_conf/Zeek-Intelligence-Feeds pull")
             os.system(f"cd ./zeek_conf/Zeek-Intelligence-Feeds && git fetch origin master && git reset --hard FETCH_HEAD && git clean -df")
             os.system(f"cd ./zeek_conf/Zeek-Intelligence-Feeds && sed -i 's|/usr/local/zeek/share/zeek/site/|/opt/|g' main.zeek")
-
             st.toast('zeek ioc')
 
 
@@ -46,20 +45,20 @@ uploaded_file = st.file_uploader(
 
 
 
-# закладка под агента
-def summaty_csv(name_pcap_dir):
-    # alert sammary:
-    file_suricata = f'{name_pcap_dir}/eve.json'
-    if Path(file_suricata).is_file():
-        # Читаем eve.json построчно
-        data = []
-        with open(file_suricata) as f:
-            for line in f:
-                data.append(json.loads(line))
+# # закладка под агента
+# def summaty_csv(name_pcap_dir):
+#     # alert sammary:
+#     file_suricata = f'{name_pcap_dir}/eve.json'
+#     if Path(file_suricata).is_file():
+#         # Читаем eve.json построчно
+#         data = []
+#         with open(file_suricata) as f:
+#             for line in f:
+#                 data.append(json.loads(line))
 
-        # # Превращаем в DataFrame
-       # df = pd.json_normalize(data)  # нормализует вложенные поля
-    return
+#         # # Превращаем в DataFrame
+#        # df = pd.json_normalize(data)  # нормализует вложенные поля
+#     return
 
 
 
@@ -106,6 +105,14 @@ if uploaded_file is not None:
                 f'{os.path.abspath("ndpi")}/ndpiReader -i {full_path_file} -d -F -t -K json -k {path_dir}/ndpi/ndpi.json > {path_dir}/ndpi/ndpi_summary.log 2>&1')
         st.success('ndpi done')
 
+
+
+        # tshark
+        os.mkdir(f'{path_dir}/tshark')
+        with st.spinner("nDPI run, Wait for it...", show_time=True):
+            os.system(
+                f'tshark -r {full_path_file} -Y ip -T fields -e ip.src -e eth.src -e  eth.src_resolved -e ip.dst -e eth.dst -e  eth.dst_resolved -E separator=, | sort -u  > {path_dir}/tshark/ipv4_dialog.csv')
+        st.success('tshark done')
 
 
         st.session_state.key = name_pcap_dir
