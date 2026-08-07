@@ -109,9 +109,9 @@ if uploaded_file is not None:
 
         # tshark
         os.mkdir(f'{path_dir}/tshark')
-        with st.spinner("nDPI run, Wait for it...", show_time=True):
+        with st.spinner("tshark run, Wait for it...", show_time=True):
             os.system(
-                f'tshark -r {full_path_file} -Y ip -T fields -e ip.src -e eth.src -e  eth.src_resolved -e ip.dst -e eth.dst -e  eth.dst_resolved -E separator=, | sort -u  > {path_dir}/tshark/ipv4_dialog.csv')
+                f'tshark -r {full_path_file} -Y ip -T fields -e ip.src -e eth.src -e  eth.src_resolved -e ip.dst -e eth.dst -e  eth.dst_resolved -E separator=,  -E occurrence=f | sort -u  > {path_dir}/tshark/ipv4_dialog.csv')
         st.success('tshark done')
 
 
