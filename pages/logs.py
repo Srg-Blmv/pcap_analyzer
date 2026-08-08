@@ -80,6 +80,10 @@ def ndpi(file):
     return content
 
 
+def ndpi_full(file):
+    df = pd.read_json(file, lines=True)
+    return df
+
 
 if 'key' not in st.session_state:
     st.session_state.key = None
@@ -101,6 +105,9 @@ if select_folder != None:
     # ndpi
     ndpi_file = Path(f"{LOG_DIR}/{select_folder}/ndpi/ndpi_summary.log")
     ndpi_summary = ndpi(ndpi_file)
+
+    ndpi_json = Path(f"{LOG_DIR}/{select_folder}/ndpi/ndpi.json")
+    ndpi_full_df = ndpi_full(ndpi_json)
 
     # SUMMARY
     ######################################################
@@ -148,8 +155,12 @@ if select_folder != None:
 
     # nDPI
     st.subheader("nDPI")
-    with st.expander("nDPI", expanded=False):
+    with st.expander("nDPI json", expanded=False):
+        st.dataframe(ndpi_full_df)
+
+    with st.expander("nDPI summary", expanded=False):
         st.code(ndpi_summary, language='text')
+
 
 
 
