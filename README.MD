@@ -29,9 +29,13 @@ streamlit run upload.py
 # включаем наборы правил
 docker exec suricata suricata-update enable-source et/open && \
 docker exec suricata suricata-update enable-source abuse.ch/sslbl-ja3 && \
-docker exec suricata suricata-update enable-source stamus/lateral && \
-docker exec suricata suricata-update enable-source abuse.ch/feodotracker && \
+docker exec suricata suricata-update enable-source abuse.ch/sslbl-c2  && \
+docker exec suricata suricata-update enable-source abuse.ch/feodotracker  && \
 docker exec suricata suricata-update enable-source abuse.ch/urlhaus && \
+docker exec suricata suricata-update enable-source etnetera/aggressive && \
+docker exec suricata suricata-update enable-source pawpatrules && \
+docker exec suricata suricata-update enable-source ptrules/open && \
+docker exec suricata suricata-update enable-source stamus/lateral && \
 docker exec suricata suricata-update enable-source oisf/trafficid && \
 docker exec suricata suricata-update enable-source aleksibovellan/nmap
 
