@@ -36,7 +36,6 @@ docker exec suricata suricata-update enable-source etnetera/aggressive && \
 docker exec suricata suricata-update enable-source pawpatrules && \
 docker exec suricata suricata-update enable-source ptrules/open && \
 docker exec suricata suricata-update enable-source stamus/lateral && \
-docker exec suricata suricata-update enable-source oisf/trafficid && \
 docker exec suricata suricata-update enable-source aleksibovellan/nmap
 
 docker exec suricata suricata-update 
