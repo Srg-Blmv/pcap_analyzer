@@ -17,8 +17,8 @@ apt install libpcap-dev tshark
 ``` 
 cd pcap_analyzer
 mkdir data
-docker run -d --name suricata -v ./data:/tmp -v ./suricata_conf/:/home/suricata jasonish/suricata:7.0.11 suricata -c /home/suricata/suricata.yaml --unix-socket
-docker pull zeek/zeek:8.0 
+docker run -d --name suricata -v ./data:/tmp -v ./suricata_conf/:/home/suricata jasonish/suricata:8.0.6 suricata -c /home/suricata/suricata.yaml --unix-socket
+docker pull zeek/zeek:8.2 
 
 pip3 install -r requirements.txt
 cd zeek_conf  && git clone https://github.com/CriticalPathSecurity/Zeek-Intelligence-Feeds
@@ -29,14 +29,19 @@ streamlit run upload.py
 # включаем наборы правил
 docker exec suricata suricata-update enable-source et/open && \
 docker exec suricata suricata-update enable-source abuse.ch/sslbl-ja3 && \
-docker exec suricata suricata-update enable-source abuse.ch/sslbl-c2  && \
+docker exec suricata suricata-update enable-source abuse.ch/sslbl-blacklist && \
 docker exec suricata suricata-update enable-source abuse.ch/feodotracker  && \
 docker exec suricata suricata-update enable-source abuse.ch/urlhaus && \
+docker exec suricata suricata-update enable-source tgreen/hunting && \
 docker exec suricata suricata-update enable-source etnetera/aggressive && \
 docker exec suricata suricata-update enable-source pawpatrules && \
 docker exec suricata suricata-update enable-source ptrules/open && \
 docker exec suricata suricata-update enable-source stamus/lateral && \
 docker exec suricata suricata-update enable-source aleksibovellan/nmap
+docker exec suricata suricata-update enable-source ipfire/dbl && \
+docker exec suricata suricata-update enable-source julioliraup/antiphishing && \
+docker exec suricata suricata-update enable-source the-hunters-ledger/open
+
 
 docker exec suricata suricata-update 
 ```
