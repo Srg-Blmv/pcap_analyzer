@@ -17,14 +17,19 @@ apt install libpcap-dev tshark
 ``` 
 cd pcap_analyzer
 mkdir data
+
 docker run -d --name suricata -v ./data:/tmp -v ./suricata_conf/:/home/suricata jasonish/suricata:8.0.6 suricata -c /home/suricata/suricata.yaml --unix-socket
-docker pull zeek/zeek:8.2 
+
+docker run -d --name zeek -v ./data:/pcap  -v ./zeek_conf:/opt zeek/zeek:8.2  sleep infinity
+docker exec zeek zkg install zeek/foxio/ja4 --force
 
 pip3 install -r requirements.txt
 cd zeek_conf  && git clone https://github.com/CriticalPathSecurity/Zeek-Intelligence-Feeds
 cd Zeek-Intelligence-Feeds && sed -i 's|/usr/local/zeek/share/zeek/site/|/opt/|g' main.zeek
 
 streamlit run upload.py
+
+
 
 # включаем наборы правил
 docker exec suricata suricata-update enable-source et/open && \

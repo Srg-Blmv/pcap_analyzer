@@ -86,20 +86,18 @@ def zeek(folder):
 
 
 
-
-
     if dns_log.is_file():
         with open(dns_log) as f:
             data = [json.loads(line) for line in f]   # список словарей
         df = pd.json_normalize(data)
 
         # Все поля, которые нас интересуют
-        target_cols = ['query', 'qtype_name', 'rcode_name']
+        target_cols = ['query', 'qtype_name', 'rcode_name', 'answers']
 
         # Для каждого столбца, если его нет в DataFrame – добавляем с NaN
-        for col in target_cols:
-            if col not in df.columns:
-                df[col] = None   # или np.nan, если импортирован numpy
+        df = df.reindex(columns=target_cols)
+        if 'answers' in df.columns:
+                df['answers'] = df['answers'].apply(lambda x: ', '.join(x) if isinstance(x, list) else x)
 
         # Теперь берём только нужные колонки и убираем дубликаты по ним
         uniq_dns = df[target_cols].drop_duplicates()
