@@ -186,12 +186,13 @@ if select_folder != None:
 
         gr_tcp = only_tcp.groupby(['id.orig_h', 'id.resp_h']).agg(
             {'id.resp_p': list}).reset_index()
+
         gr_udp = only_udp.groupby(['id.orig_h', 'id.resp_h']).agg(
             {'id.resp_p': list}).reset_index()
 
 
     if static_graf:
-        
+
         dot_tcp = graf(gr_tcp, "IPv4 TCP")
         dot_udp = graf(gr_udp, "IPv4 UDP")
         st.header("TCP")

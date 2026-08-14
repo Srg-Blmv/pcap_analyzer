@@ -1,15 +1,15 @@
-import pandas as pd
-import streamlit as st
+import ipaddress
 import json
 import os
-from pathlib import Path
-import geoip2.database
-import ipaddress
 import re
-from streamlit_echarts import st_echarts
-import plotly.express as px
 import subprocess
+from pathlib import Path
 
+import geoip2.database
+import pandas as pd
+import plotly.express as px
+import streamlit as st
+from streamlit_echarts import st_echarts
 
 LOG_DIR = Path("data")
 folder = os.listdir(LOG_DIR)
@@ -34,7 +34,7 @@ def suricata_get_df(file):
         # # Превращаем в DataFrame
         df = pd.json_normalize(data)  # нормализует вложенные поля
         # делаем только алерты
-       # df_alert = df[df["event_type"] == "alert"].copy()
+        # df_alert = df[df["event_type"] == "alert"].copy()
 
         cols = [
             "timestamp",
@@ -55,7 +55,7 @@ def suricata_get_df(file):
         #     if c not in df_alert.columns:
         #         df_alert[c] = ""
 
-       # df_alert = df_alert[cols].reset_index(drop=True)
+        # df_alert = df_alert[cols].reset_index(drop=True)
         # Количество алертов в зависимости от критичности
         # severity_counts = df_alert["alert.severity"].value_counts().sort_index()
 
@@ -67,16 +67,17 @@ def suricata_get_df(file):
     else:
         return None
 
+
 # ZEEK DNS IP
 def zeek(folder):
     # ZEEK
     uniq_ip = []
     uniq_dns = []
-    conn_log =  Path(f"{folder}/conn.log")
-    dns_log =  Path(f"{folder}/dns.log")
+    conn_log = Path(f"{folder}/conn.log")
+    dns_log = Path(f"{folder}/dns.log")
     if conn_log.is_file():
         with open(conn_log) as f:
-            data=[]
+            data = []
             for line in f:
                 data.append(json.loads(line))
         df = pd.json_normalize(data)
@@ -84,27 +85,27 @@ def zeek(folder):
     else:
         uniq_ip = None
 
-
-
     if dns_log.is_file():
         with open(dns_log) as f:
-            data = [json.loads(line) for line in f]   # список словарей
+            data = [json.loads(line) for line in f]  # список словарей
         df = pd.json_normalize(data)
 
         # Все поля, которые нас интересуют
-        target_cols = ['query', 'qtype_name', 'rcode_name', 'answers']
+        target_cols = ["query", "qtype_name", "rcode_name", "answers"]
 
         # Для каждого столбца, если его нет в DataFrame – добавляем с NaN
         df = df.reindex(columns=target_cols)
-        if 'answers' in df.columns:
-                df['answers'] = df['answers'].apply(lambda x: ', '.join(x) if isinstance(x, list) else x)
+        if "answers" in df.columns:
+            df["answers"] = df["answers"].apply(
+                lambda x: ", ".join(x) if isinstance(x, list) else x
+            )
 
         # Теперь берём только нужные колонки и убираем дубликаты по ним
         uniq_dns = df[target_cols].drop_duplicates()
 
     else:
         uniq_dns = None
-    return  uniq_ip, uniq_dns
+    return uniq_ip, uniq_dns
 
 
 # zeek intel alerts
@@ -113,13 +114,14 @@ def zeek_get_alerts(folder):
     intel_file = Path(f"{folder}/intel.log")
     if intel_file.is_file():
         with open(intel_file) as f:
-            data=[]
+            data = []
             for line in f:
                 data.append(json.loads(line))
         zeek_alerts = pd.json_normalize(data)
         return zeek_alerts
     else:
         return None
+
 
 # ndpix
 def ndpi(file):
@@ -149,6 +151,56 @@ def ndpi(file):
 
     return lines, df_protocols
 
+
+# ndpi json summary.
+def ndpi_log(file):
+    data = []
+
+    if Path(file).is_file():
+        with open(file) as f:
+            lines = f.readlines()
+            for line in lines:
+                data.append(json.loads(line))
+        rows = []
+        for flow in data:
+            row = {}
+
+            row["vlan_id"] = flow.get("vlan_id", 0)
+            row["src_ip"] = flow.get("src_ip", 0)
+            row["dest_ip"] = flow.get("dest_ip", 0)
+            row["src_port"] = flow.get("src_port", 0)
+            row["dst_port"] = flow.get("dst_port", 0)
+            row["L3-L4"] = flow.get("proto", "N/A")
+            row["duration"] = flow.get("duration", 0)
+
+            # xfer (если есть)
+            # xfer = flow.get('xfer', {})
+            # row['direction'] = xfer.get('data_ratio_str', 'N/A')
+            # row['src2dst_bytes'] = xfer.get('src2dst_bytes', 0)
+            # row['dst2src_bytes'] = xfer.get('dst2src_bytes', 0)
+            # row['src2dst_packets'] = xfer.get('src2dst_packets', 0)
+            # row['dst2src_packets'] = xfer.get('dst2src_packets', 0)
+
+            # ndpi (если есть)
+            ndpi = flow.get("ndpi", {})
+            row["ndpi_proto"] = ndpi.get("proto", "Unknown")
+            row["proto_by_ip"] = ndpi.get("proto_by_ip", "Unknown")
+            # row['breed'] = ndpi.get('breed', 'Unknown')
+            # row['encrypted'] = 'Yes' if ndpi.get('encrypted', 0) else 'No'
+
+            # flow_risk (если есть)
+            flow_risk = ndpi.get("flow_risk", {})
+            if flow_risk:
+                risk_names = [flow_risk[r].get("risk", "Unknown") for r in flow_risk]
+                row["risks"] = ", ".join(risk_names)
+            else:
+                row["risks"] = "None"
+
+            rows.append(row)
+        df = pd.DataFrame(rows)  # .sort_values(by=["src_ip"])
+        return df
+
+
 # Public IP
 def search_public_ip(ip_addrs):
     # Search public IP
@@ -167,12 +219,12 @@ def search_public_ip(ip_addrs):
                     response = reader.city(w)
                 except Exception as ex:
                     public_ip.append(
-                    {
-                        "ip": str(w),
-                        "сity": "not found in db",
-                        "country": "404",
-                        "registered_country": "404",
-                    }
+                        {
+                            "ip": str(w),
+                            "сity": "not found in db",
+                            "country": "404",
+                            "registered_country": "404",
+                        }
                     )
                 try:
                     city = response.city.names["en"]
@@ -197,7 +249,7 @@ def search_public_ip(ip_addrs):
 
     df = pd.DataFrame(public_ip)
     if df.empty:
-        return  None
+        return None
     return df
 
 
@@ -205,33 +257,35 @@ def search_public_ip(ip_addrs):
 def ndpi_protocol_pie(protocols, col):
     # DPI Protocols
     height = "400px"
-    protocols_sorted = protocols.sort_values('flows', ascending=True)
+    protocols_sorted = protocols.sort_values("flows", ascending=True)
 
     if len(protocols) > 10:
         height = "600px"
         fig = px.bar(
-            protocols.sort_values('flows'),
-            y='protocol',
-            x='flows',
-            orientation='h',
-            title='nDPI',
+            protocols.sort_values("flows"),
+            y="protocol",
+            x="flows",
+            orientation="h",
+            title="nDPI",
             height=600,
-            text_auto=True
+            text_auto=True,
         )
         fig.update_layout(margin=dict(l=0, r=0, t=30, b=0))
         fig.update_xaxes(type="log")
         fig.update_xaxes(visible=False)  # скрыть вообще всё на оси X
-        fig.update_layout(yaxis={'categoryorder': 'total ascending'})
-        fig.update_traces(textposition='outside')
+        fig.update_layout(yaxis={"categoryorder": "total ascending"})
+        fig.update_traces(textposition="outside")
         with col1:
-            st.plotly_chart(fig, width="stretch", config={
-                            "displayModeBar": False})
+            st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})
 
     else:
         options_ndpi = {
             "title": {"text": "nDPI", "subtext": "", "left": "right"},
             "tooltip": {"trigger": "item"},
-            "legend": {"orient": "vertical", "left": "left", },
+            "legend": {
+                "orient": "vertical",
+                "left": "left",
+            },
             "series": [
                 {
                     "name": "flows",
@@ -249,10 +303,7 @@ def ndpi_protocol_pie(protocols, col):
                     },
                     "labelLine": {"show": True},
                     "data": [
-                        {
-                            "value": row['flows'],
-                            "name": f"{(row['protocol'])}"
-                        }
+                        {"value": row["flows"], "name": f"{(row['protocol'])}"}
                         for _, row in protocols_sorted.iterrows()
                     ],
                     "emphasis": {
@@ -269,30 +320,38 @@ def ndpi_protocol_pie(protocols, col):
         with col:
             st_echarts(options=options_ndpi, height=height)
 
-#suricata Files
+
+# suricata Files
 def suricata_get_fileinfo(suricata_df):
     fileinfo = []
     # копируем только алерты
-    fileinfo = suricata_df[suricata_df["event_type"] == "fileinfo"].copy().reset_index(drop=True)
+    fileinfo = (
+        suricata_df[suricata_df["event_type"] == "fileinfo"]
+        .copy()
+        .reset_index(drop=True)
+    )
     fileinfo.dropna(how="all", axis=1, inplace=True)
     if fileinfo.empty:
         return None
     return fileinfo
 
+
 # suricata anamoly
 def suricata_get_anomaly(suricata_df):
     anomaly = []
     # копируем только алерты
-    anomaly = suricata_df[suricata_df["event_type"] == "anomaly"].copy().reset_index(drop=True)
+    anomaly = (
+        suricata_df[suricata_df["event_type"] == "anomaly"]
+        .copy()
+        .reset_index(drop=True)
+    )
     anomaly.dropna(how="all", axis=1, inplace=True)
     if anomaly.empty:
         return None
     return anomaly
 
 
-
-
-#suricata Alers
+# suricata Alers
 def suricata_get_alerts(suricata_df):
     df_alert = []
     uniq_alert = []
@@ -315,7 +374,6 @@ def suricata_get_alerts(suricata_df):
             "alert.severity",
             "alert.signature_id",
             "payload",
-
         ]
         for c in cols:
             if c not in df_alert.columns:
@@ -324,26 +382,28 @@ def suricata_get_alerts(suricata_df):
         df_alert = df_alert[cols].reset_index(drop=True)
 
         # Количество алертов в зависимости от критичности
-        suricata_alert_count = df_alert["alert.severity"].value_counts(
-        ).sort_index()
+        suricata_alert_count = df_alert["alert.severity"].value_counts().sort_index()
 
         # Переделываем из serial в DF
         suricata_alert_count = suricata_alert_count.to_frame().reset_index()
 
-
-
-
         # Уникальные алерты
         # cчитаем строк в группе по которой делаем drop
-        counts = df_alert.groupby( ['src_ip',
-                         'dest_ip', 'alert.signature'] ).size().reset_index(name='count')
-
+        counts = (
+            df_alert.groupby(["src_ip", "dest_ip", "alert.signature"])
+            .size()
+            .reset_index(name="count")
+        )
 
         # Удаляем дубликаты ПО 3 ключам, но БЕРЁМ ВСЕ столбцы
-        uniq_alert = df_alert.drop_duplicates(subset=['src_ip', 'dest_ip', 'alert.signature']).reset_index(drop=True)
+        uniq_alert = df_alert.drop_duplicates(
+            subset=["src_ip", "dest_ip", "alert.signature"]
+        ).reset_index(drop=True)
 
         # Объединяем уникальные строки с колонкой с количеством
-        uniq_alert = uniq_alert.merge(counts, on=['src_ip', 'dest_ip', 'alert.signature']).sort_values("alert.severity")
+        uniq_alert = uniq_alert.merge(
+            counts, on=["src_ip", "dest_ip", "alert.signature"]
+        ).sort_values("alert.severity")
         # По скольку объеденили не по 5tupl Src портв дропнем
         # uniq_alert.drop("src_port", axis=1, inplace=True)
         # uniq_alert.drop("payload", axis=1, inplace=True)
@@ -361,7 +421,10 @@ def suricata_pie(suricata_alerts_count, col):
     options_suricata = {
         "title": {"text": "suricata alert", "subtext": "", "left": "right"},
         "tooltip": {"trigger": "item"},
-        "legend": {"orient": "vertical", "left": "left", },
+        "legend": {
+            "orient": "vertical",
+            "left": "left",
+        },
         "series": [
             {
                 "name": "count",
@@ -381,9 +444,13 @@ def suricata_pie(suricata_alerts_count, col):
                 "labelLine": {"show": True},
                 "data": [
                     {
-                        "value": row['count'],
+                        "value": row["count"],
                         "name": f"Severity {int(row['alert.severity'])}",
-                        "itemStyle": {"color": severity_colors.get(int(row['alert.severity']), "#999999")}
+                        "itemStyle": {
+                            "color": severity_colors.get(
+                                int(row["alert.severity"]), "#999999"
+                            )
+                        },
                     }
                     for _, row in suricata_alerts_count.iterrows()
                 ],
@@ -412,32 +479,41 @@ def suricata_pie(suricata_alerts_count, col):
 # files + http.log
 def http_files(folder_zeek):
 
-    http_cols = ['id.orig_h','id.resp_h','id.resp_p','method', 'host', 'uri', 'status_code', 'resp_mime_types', 'resp_fuids']
-    files_coils_http = ['source','analyzers', 'duration', 'sha1','fuid']
-    #if 'HTTP' in uniq_protos.values:
+    http_cols = [
+        "id.orig_h",
+        "id.resp_h",
+        "id.resp_p",
+        "method",
+        "host",
+        "uri",
+        "status_code",
+        "resp_mime_types",
+        "resp_fuids",
+    ]
+    files_coils_http = ["source", "analyzers", "duration", "sha1", "fuid"]
+    # if 'HTTP' in uniq_protos.values:
     path = f"{folder_zeek}/http.log"
     if Path(path).is_file():
         # Создаем DF для http.log
-        with open(path, 'r') as f:
+        with open(path, "r") as f:
             data = [json.loads(line.strip()) for line in f if line.strip()]
         # Создаём DataFrame
         df_http_log = pd.DataFrame(data)
-        #resp_fuids в http храниться  в виде списка. exlode его разворачивает и дропаем все resp_fuids в которых нету значений.
-        df_http_log = df_http_log.explode('resp_fuids').dropna(subset=['resp_fuids'])
+        # resp_fuids в http храниться  в виде списка. exlode его разворачивает и дропаем все resp_fuids в которых нету значений.
+        df_http_log = df_http_log.explode("resp_fuids").dropna(subset=["resp_fuids"])
         # оставляем только нужные данные а http.logs .reindex это если не все поля присуствуют в логе
         df_http_log = df_http_log.reindex(columns=http_cols)
         # берём только HTTP из files.log и сразу отшибаем не нужные столбцы
-        df_files_http = df_files[df_files['source'] == 'HTTP'].reindex(columns=files_coils_http)
+        df_files_http = df_files[df_files["source"] == "HTTP"].reindex(
+            columns=files_coils_http
+        )
 
         # делаем join
         result_df = df_http_log.merge(
-            df_files_http,
-            left_on='resp_fuids',
-            right_on='fuid',
-            how='inner'
+            df_files_http, left_on="resp_fuids", right_on="fuid", how="inner"
         )
-        result_df.drop(columns=['resp_fuids'], inplace=True)
-        uniq_mime_type = result_df['resp_mime_types'].explode().unique()
+        result_df.drop(columns=["resp_fuids"], inplace=True)
+        uniq_mime_type = result_df["resp_mime_types"].explode().unique()
         st.badge(f"http Zeek: {len(result_df)}")
         st.badge("http uniq mime types:", color="orange")
         st.write("\n".join([f"•{mime} " for mime in uniq_mime_type]))
@@ -447,47 +523,63 @@ def http_files(folder_zeek):
 # files + ftp.log
 def ftp_files(folder_zeek):
 
-    ftp_cols = ['id.orig_h','id.resp_h','id.resp_p','user','password','command', 'reply_msg', 'arg', 'mime_type','fuid']
-    files_coils_http = ['source','analyzers', 'duration', 'sha1','fuid']
+    ftp_cols = [
+        "id.orig_h",
+        "id.resp_h",
+        "id.resp_p",
+        "user",
+        "password",
+        "command",
+        "reply_msg",
+        "arg",
+        "mime_type",
+        "fuid",
+    ]
+    files_coils_http = ["source", "analyzers", "duration", "sha1", "fuid"]
     path = f"{folder_zeek}/ftp.log"
     if Path(path).is_file():
         # Создаем DF для ftp.log
-        with open(path, 'r') as f:
+        with open(path, "r") as f:
             data = [json.loads(line.strip()) for line in f if line.strip()]
         # Создаём DataFrame
         df_ftp_log = pd.DataFrame(data)
         # оставляем только нужные данные а ftp.logs .reindex это если не все поля присуствуют в логе  и дропаем строки если нет fuid
-        df_ftp_log = df_ftp_log.reindex(columns=ftp_cols).dropna(subset=['fuid'])
+        df_ftp_log = df_ftp_log.reindex(columns=ftp_cols).dropna(subset=["fuid"])
         # берём только ftp из files.log и сразу отшибаем не нужные столбцы
-        df_files_http = df_files[df_files['source'] == 'FTP_DATA'].reindex(columns=files_coils_http)
+        df_files_http = df_files[df_files["source"] == "FTP_DATA"].reindex(
+            columns=files_coils_http
+        )
         # делаем join
         result_df = df_ftp_log.merge(
-            df_files_http,
-            left_on='fuid',
-            right_on='fuid',
-            how='inner'
+            df_files_http, left_on="fuid", right_on="fuid", how="inner"
         )
-        uniq_mime_type = result_df['mime_type'].explode().unique()
+        uniq_mime_type = result_df["mime_type"].explode().unique()
         st.badge(f"ftp Zeek: {len(result_df)}")
         st.badge("http uniq mime types:", color="orange")
         st.write("\n".join([f"• {mime} " for mime in uniq_mime_type]))
         st.dataframe(result_df)
 
 
-
 # ========= MAIN ===============
-if 'key' not in st.session_state:
+if "key" not in st.session_state:
     st.session_state.key = None
 
+
 def change_folden():
-    st.session_state.key =  st.session_state.new_folden
+    st.session_state.key = st.session_state.new_folden
+
 
 select_folder = st.session_state.key
-st.selectbox("select folder", folder, on_change=change_folden, key='new_folden', index=None, placeholder="Выберети папку")
+st.selectbox(
+    "select folder",
+    folder,
+    on_change=change_folden,
+    key="new_folden",
+    index=None,
+    placeholder="Выберети папку",
+)
 
 st.set_page_config(layout="wide")
-
-
 
 
 if select_folder != None:
@@ -497,20 +589,22 @@ if select_folder != None:
 
     # ndpi
     ndpi_file = Path(f"{LOG_DIR}/{select_folder}/ndpi/ndpi_summary.log")
+    ndpi_json = Path(f"{LOG_DIR}/{select_folder}/ndpi/ndpi.json")
     ndpi_summary, protocols = ndpi(ndpi_file)
 
-   # get data suricata
+    # get data suricata
     suricata_file = f"{LOG_DIR}/{select_folder}/suricata/eve.json"
     suricata_df = suricata_get_df(suricata_file)
 
     st.subheader(f"Summary pcap: {st.session_state.key}")
     st.html("<hr></hr>")
-    col1, col2, = st.columns(2, border=True)
-
+    (
+        col1,
+        col2,
+    ) = st.columns(2, border=True)
 
     # cтроим пирог протоколов
     ndpi_protocol_pie(protocols, col1)
-
 
     # если датасет не пустой, и если если есть алерты строим пирог сурикаты
     if suricata_df is not None:
@@ -520,33 +614,40 @@ if select_folder != None:
         if suricata_alerts_count is not None:
             suricata_pie(suricata_alerts_count, col2)
             st.badge(f"uniq suricata alert: {len(uniq_alert)}")
-            st.caption("Уникальные алерты сукариты (5tuple + proto + app_proto + alert.signature)" )
-            st.dataframe(uniq_alert,hide_index=True,column_config={"payload": None, "src_port": None})
+            st.caption(
+                "Уникальные алерты сукариты (5tuple + proto + app_proto + alert.signature)"
+            )
+            st.dataframe(
+                uniq_alert,
+                hide_index=True,
+                column_config={"payload": None, "src_port": None},
+            )
         else:
             with col2:
                 st.markdown(
-                "<div style='text-align: center;'>suricata no alerts</div>",
-                unsafe_allow_html=True
-            )
+                    "<div style='text-align: center;'>suricata no alerts</div>",
+                    unsafe_allow_html=True,
+                )
     else:
         fileinfo = None
         suricata_anomaly = None
         with col2:
             st.markdown(
                 "<div style='text-align: center;'>suricata no alerts</div>",
-                unsafe_allow_html=True
+                unsafe_allow_html=True,
             )
 
-    #zeel IOC
+    # zeel IOC
 
     zeek_intel = zeek_get_alerts(folder_zeek)
     if zeek_intel is not None:
         st.badge(f"Zeek IOC alert: {len(zeek_intel)}")
         st.dataframe(zeek_intel)
 
-
-
-    col1_dns, col2_public_ip, = st.columns(2, border=True)
+    (
+        col1_dns,
+        col2_public_ip,
+    ) = st.columns(2, border=True)
     # DNS UNIQ
     if dns is not None:
         with col1_dns:
@@ -559,40 +660,47 @@ if select_folder != None:
     if ip_addrs is not None:
         df_public_ip = search_public_ip(ip_addrs)
         if df_public_ip is not None:
-
             with col2_public_ip:
                 st.badge(f"Public IP: {len(df_public_ip)}")
                 st.caption("Уникальные публичные IP адресса, GeoLite2 ")
                 st.dataframe(df_public_ip, hide_index=True)
 
-# =================== ФАЙЛЫ =====================
+    # =================== ФАЙЛЫ =====================
 
     # Ищем Файлы
     files_log = f"{folder_zeek}/files.log"
 
-    if Path(files_log).is_file()  or fileinfo is not None:
+    if Path(files_log).is_file() or fileinfo is not None:
         st.header("Файлы")
         st.html("<hr></hr>")
 
         if Path(files_log).is_file():
-            with open(files_log, 'r') as f:
+            with open(files_log, "r") as f:
                 data = [json.loads(line.strip()) for line in f if line.strip()]
             # Создаём DataFrame
             df_files = pd.DataFrame(data)
             uniq_protos = df_files["source"].drop_duplicates().reset_index(drop=True)
-            st.badge(f"zeek протоколы в которых найдены файлы: {uniq_protos.values}",color='green')
+            st.badge(
+                f"zeek протоколы в которых найдены файлы: {uniq_protos.values}",
+                color="green",
+            )
             st.caption("Файлы из Zeek files.log с данными из http/ftp")
-            st.caption("Eсли таблица есть но emty значит в файле files.log есть запись, но в файле протокола нет записи о файле.")
+            st.caption(
+                "Eсли таблица есть но emty значит в файле files.log есть запись, но в файле протокола нет записи о файле."
+            )
 
-            if 'HTTP' in uniq_protos.values:
+            if "HTTP" in uniq_protos.values:
                 http_files(folder_zeek)
-            if 'FTP_DATA' in uniq_protos.values:
+            if "FTP_DATA" in uniq_protos.values:
                 ftp_files(folder_zeek)
 
-    # Суриката файлы
+        # Суриката файлы
 
         if fileinfo is not None:
-            st.badge(f"suricata протоколы в которых найдены файлы: { fileinfo["app_proto"].drop_duplicates().reset_index(drop=True).values}", color="green")
+            st.badge(
+                f"suricata протоколы в которых найдены файлы: {fileinfo['app_proto'].drop_duplicates().reset_index(drop=True).values}",
+                color="green",
+            )
             st.badge(f"suricata  fileinfo: {len(fileinfo)}")
             st.dataframe(fileinfo)
 
@@ -603,7 +711,7 @@ if select_folder != None:
         st.header("Аномалии")
         st.html("<hr></hr>")
         if Path(weird_log).is_file():
-            with open(weird_log, 'r') as f:
+            with open(weird_log, "r") as f:
                 data = [json.loads(line.strip()) for line in f if line.strip()]
             # Создаём DataFrame
             zeek_anomaly = pd.DataFrame(data)
@@ -611,12 +719,16 @@ if select_folder != None:
             st.badge(f"zeek weird: {len(zeek_anomaly)}")
             st.dataframe(zeek_anomaly)
 
-
         if suricata_anomaly is not None:
             st.badge(f"suricata anomaly: {len(suricata_anomaly)}")
             st.dataframe(suricata_anomaly)
 
 
+    ndpi_json_session = ndpi_log(ndpi_json)
+    if ndpi_json_session is not None:
+        st.header("nDPI Risk sessions ")
+        st.html("<hr></hr>")
+        st.dataframe(ndpi_json_session)
 
 else:
     pass

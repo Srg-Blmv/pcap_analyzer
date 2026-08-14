@@ -21,7 +21,7 @@ mkdir data
 docker run -d --name suricata -v ./data:/tmp -v ./suricata_conf/:/home/suricata jasonish/suricata:8.0.6 suricata -c /home/suricata/suricata.yaml --unix-socket
 
 docker run -d --name zeek -v ./data:/pcap  -v ./zeek_conf:/opt zeek/zeek:8.2  sleep infinity
-docker exec zeek zkg install zeek/foxio/ja4 --force
+docker exec zeek sh -c "zkg refresh && zkg install zeek/foxio/ja4 --force"
 
 pip3 install -r requirements.txt
 cd zeek_conf  && git clone https://github.com/CriticalPathSecurity/Zeek-Intelligence-Feeds

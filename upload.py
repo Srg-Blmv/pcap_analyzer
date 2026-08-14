@@ -39,31 +39,6 @@ uploaded_file = st.file_uploader(
 
 
 
-#if 'sel_folder' not in st.session_state:
-#    st.session_state.sel_folder = ""
-
-
-
-
-# # закладка под агента
-# def summaty_csv(name_pcap_dir):
-#     # alert sammary:
-#     file_suricata = f'{name_pcap_dir}/eve.json'
-#     if Path(file_suricata).is_file():
-#         # Читаем eve.json построчно
-#         data = []
-#         with open(file_suricata) as f:
-#             for line in f:
-#                 data.append(json.loads(line))
-
-#         # # Превращаем в DataFrame
-#        # df = pd.json_normalize(data)  # нормализует вложенные поля
-#     return
-
-
-
-
-
 
 if uploaded_file is not None:
     try:
