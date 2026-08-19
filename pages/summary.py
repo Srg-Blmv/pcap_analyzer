@@ -714,8 +714,7 @@ if select_folder != None:
     clamAV_log_file = Path(clamAV_log).is_file()
     if clamAV_log_file:
         with open(clamAV_log, 'r', encoding='utf-8') as f:
-            # c 5 строки чистаем, там в начале мусор
-            content = ''.join(f.readlines()[4:])
+            content = f.read()
 
         with st.expander("clamAV summary", expanded=False):
             st.code(content, language='text')
