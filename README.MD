@@ -4,6 +4,8 @@
 - suricata
 - zeek
 - nDPI
+- ClamAV
+- tshark  mac resolve
 
 ### Карта на основе данных из лога:
 - zeek conn.log
@@ -22,6 +24,9 @@ docker run -d --name suricata -v ./data:/tmp -v ./suricata_conf/:/home/suricata 
 
 docker run -d --name zeek -v ./data:/pcap  -v ./zeek_conf:/opt zeek/zeek:8.2  sleep infinity
 docker exec zeek sh -c "zkg refresh && zkg install zeek/foxio/ja4 --force"
+
+docker run -d --name clamav -v ./data:/tmp  clamav/clamav:1.5.4-debian13-slim  sleep infinity
+
 
 pip3 install -r requirements.txt
 cd zeek_conf  && git clone https://github.com/CriticalPathSecurity/Zeek-Intelligence-Feeds
@@ -49,6 +54,14 @@ docker exec suricata suricata-update enable-source the-hunters-ledger/open
 
 
 docker exec suricata suricata-update 
+
+
+# обновляем базы clamAV
+docker exec clamav freshclam
+
+
+
+
 ```
 Для загрузки файлова больше 210mb
 

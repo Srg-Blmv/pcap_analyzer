@@ -43,6 +43,20 @@ if path_pcap:
         f'docker exec  zeek  bash -c "cd /pcap/{name_pcap_dir}/zeek && zeek -C -r ../{file_name}  /opt/conf.zeek  LogAscii::use_json=T"')
 
 
+
+    # clamAV
+    extract_files = f"{path_dir}/zeek/extract_files"
+    extract_files_dir = Path(extract_files).is_dir()
+    if extract_files_dir:
+        print("ClamAV start")
+        os.system(
+        f'docker exec clamav  clamscan -r /tmp/{name_pcap_dir}/zeek/extract_files -l /tmp/{name_pcap_dir}/clamav.log ')
+        os.system(
+        f'docker exec clamav  chmod 666 /tmp/{name_pcap_dir}/clamav.log ')
+    else:
+         print("extract_files not found")
+
+
     # ndpi
     os.mkdir(f'{path_dir}/ndpi')
     print("ndpi start")

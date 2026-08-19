@@ -675,6 +675,7 @@ if select_folder != None:
         st.html("<hr></hr>")
 
         if Path(files_log).is_file():
+
             with open(files_log, "r") as f:
                 data = [json.loads(line.strip()) for line in f if line.strip()]
             # Создаём DataFrame
@@ -704,6 +705,34 @@ if select_folder != None:
             st.badge(f"suricata  fileinfo: {len(fileinfo)}")
             st.dataframe(fileinfo)
 
+
+
+    # clamAV
+    st.header("clamAV")
+    st.html("<hr></hr>")
+    clamAV_log = f"{LOG_DIR}/{select_folder}/clamav.log"
+    clamAV_log_file = Path(clamAV_log).is_file()
+    if clamAV_log_file:
+        with open(clamAV_log, 'r', encoding='utf-8') as f:
+            # c 5 строки чистаем, там в начале мусор
+            content = ''.join(f.readlines()[4:])
+
+        with st.expander("clamAV summary", expanded=False):
+            st.code(content, language='text')
+
+
+
+    ndpi_json_session = ndpi_log(ndpi_json)
+    if ndpi_json_session is not None:
+        st.header("nDPI Risk sessions ")
+        st.html("<hr></hr>")
+        st.dataframe(ndpi_json_session)
+
+
+
+
+
+
     # Ищем Аномалии
     weird_log = f"{folder_zeek}/weird.log"
 
@@ -723,12 +752,6 @@ if select_folder != None:
             st.badge(f"suricata anomaly: {len(suricata_anomaly)}")
             st.dataframe(suricata_anomaly)
 
-
-    ndpi_json_session = ndpi_log(ndpi_json)
-    if ndpi_json_session is not None:
-        st.header("nDPI Risk sessions ")
-        st.html("<hr></hr>")
-        st.dataframe(ndpi_json_session)
 
 else:
     pass
