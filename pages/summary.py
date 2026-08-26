@@ -476,7 +476,7 @@ def suricata_pie(suricata_alerts_count, col):
     # )
 
 
-# files + http.log
+# files + http.log Скачан c cервера GET
 def http_files(folder_zeek):
 
     http_cols = [
@@ -487,6 +487,7 @@ def http_files(folder_zeek):
         "host",
         "uri",
         "status_code",
+        "filename",
         "resp_mime_types",
         "resp_fuids",
     ]
@@ -514,10 +515,56 @@ def http_files(folder_zeek):
         )
         result_df.drop(columns=["resp_fuids"], inplace=True)
         uniq_mime_type = result_df["resp_mime_types"].explode().unique()
-        st.badge(f"http Zeek: {len(result_df)}")
+        st.badge(f"http Zeek GET: {len(result_df)}")
         st.badge("http uniq mime types:", color="orange")
         st.write("\n".join([f"•{mime} " for mime in uniq_mime_type]))
         st.dataframe(result_df)
+
+
+# files + http.log Загружен на сервера POST
+def http_files_post(folder_zeek):
+
+    http_cols = [
+        "id.orig_h",
+        "id.resp_h",
+        "id.resp_p",
+        "method",
+        "host",
+        "uri",
+        "status_code",
+        "orig_mime_types",
+        "orig_fuids",
+        "orig_filenames",
+    ]
+    files_coils_http = ["source", "analyzers", "duration", "sha1", "fuid"]
+    # if 'HTTP' in uniq_protos.values:
+    path = f"{folder_zeek}/http.log"
+    if Path(path).is_file():
+        # Создаем DF для http.log
+        with open(path, "r") as f:
+            data = [json.loads(line.strip()) for line in f if line.strip()]
+        # Создаём DataFrame
+        df_http_log = pd.DataFrame(data)
+        # orig_fuids в http храниться  в виде списка. exlode его разворачивает и дропаем все orig_fuids в которых нету значений.
+        df_http_log = df_http_log.explode("orig_fuids").dropna(subset=["orig_fuids"])
+        # оставляем только нужные данные а http.logs .reindex это если не все поля присуствуют в логе
+        df_http_log = df_http_log.reindex(columns=http_cols)
+        # берём только HTTP из files.log и сразу отшибаем не нужные столбцы
+        df_files_http = df_files[df_files["source"] == "HTTP"].reindex(
+            columns=files_coils_http
+        )
+
+        # делаем join
+        result_df = df_http_log.merge(
+            df_files_http, left_on="orig_fuids", right_on="fuid", how="inner"
+        )
+        result_df.drop(columns=["orig_fuids"], inplace=True)
+        uniq_mime_type = result_df["orig_mime_types"].explode().unique()
+        st.badge(f"http Zeek POST: {len(result_df)}")
+        st.badge("http uniq mime types:", color="orange")
+        st.write("\n".join([f"•{mime} " for mime in uniq_mime_type]))
+        st.dataframe(result_df)
+
 
 
 # files + ftp.log
@@ -692,18 +739,20 @@ if select_folder != None:
 
             if "HTTP" in uniq_protos.values:
                 http_files(folder_zeek)
+                http_files_post(folder_zeek)
             if "FTP_DATA" in uniq_protos.values:
                 ftp_files(folder_zeek)
 
         # Суриката файлы
+        with st.expander("suricata fileinfo", expanded=False):
 
-        if fileinfo is not None:
-            st.badge(
-                f"suricata протоколы в которых найдены файлы: {fileinfo['app_proto'].drop_duplicates().reset_index(drop=True).values}",
-                color="green",
-            )
-            st.badge(f"suricata  fileinfo: {len(fileinfo)}")
-            st.dataframe(fileinfo)
+            if fileinfo is not None:
+                st.badge(
+                    f"suricata протоколы в которых найдены файлы: {fileinfo['app_proto'].drop_duplicates().reset_index(drop=True).values}",
+                    color="green",
+                )
+                st.badge(f"suricata  fileinfo: {len(fileinfo)}")
+                st.dataframe(fileinfo)
 
 
 
