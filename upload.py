@@ -96,7 +96,7 @@ if uploaded_file is not None:
         with st.spinner("nDPI run, Wait for it...", show_time=True):
             #### -d (Disable guess): отключает механизм "угадывания" протокола и использует только строгую Deep Packet Inspection (DPI)
             os.system(
-                f'{os.path.abspath("ndpi")}/ndpiReader -i {full_path_file}  -F -t -K json -k {path_dir}/ndpi/ndpi.json > {path_dir}/ndpi/ndpi_summary.log 2>&1')
+                f'{os.path.abspath("ndpi")}/ndpiReader -i {full_path_file} -d  -F -t -K json -k {path_dir}/ndpi/ndpi.json > {path_dir}/ndpi/ndpi_summary.log 2>&1')
         st.success('ndpi done')
 
 
