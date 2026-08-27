@@ -73,5 +73,6 @@ python ./bigfile_upload.py  ./sample.pcap
 Добавил в nDPIreader протоколы:
 1) Fanuc Focas2
 2) LCV2
+3) INA2000
 
 tshark на больших файлах очень медленно из за резолва mac
