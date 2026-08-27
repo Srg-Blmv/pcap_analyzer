@@ -14,7 +14,7 @@
 ### Установка
 
 ```
-apt install libpcap-dev tshark
+apt install libpcap-dev tshark graphviz
 ```
 ``` 
 cd pcap_analyzer

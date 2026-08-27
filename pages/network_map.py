@@ -15,9 +15,11 @@ st.html("<hr></hr>")
 # static Graf
 
 
-def graf(connections, name):
+def graf(connections, name, rank):
     dot = graphviz.Digraph()
-    dot.attr(label=name, labelloc='t', rankdir='LR',  rank='same')
+    # TB = слева на право
+    # LR = cверху в низ
+    dot.attr(label=name, labelloc='t', rankdir=rank,  rank='same')
     for _, row in connections.iterrows():
         if len(row['id.resp_p']) > 3:
             port = (
@@ -151,9 +153,35 @@ def dinamic_graf():
     st.components.v1.html(HtmlFile_udp.read(), height=700)
 
 
+def graph_download_buttons(dot, name):
+    # col1, col2 = st.columns(2)
+
+    # with col1:
+    svg_data = dot.pipe(format="svg")
+    st.download_button(
+        f"Скачать {name} SVG",
+        data=svg_data,
+        file_name=f"{name.lower()}_network.svg",
+        mime="image/svg+xml",
+        #mime="application/pdf"
+    )
+
+    # with col2:
+    pdf_data = dot.pipe(format="pdf")
+    st.download_button(
+        f"Скачать {name} PDF",
+        data=pdf_data,
+        file_name=f"{name.lower()}_network.pdf",
+        mime="application/pdf",
+    )
+
+
+
+
 
 if 'key' not in st.session_state:
     st.session_state.key = None
+
 def change_folden():
     st.session_state.key =  st.session_state.new_folden
 
@@ -162,8 +190,10 @@ st.selectbox("select folder", folder, on_change=change_folden, key='new_folden',
 
 st.set_page_config(layout="wide")
 
-static_graf = st.checkbox("Static Graf", value=True)
-st.caption("A static graph may not work well with a large number of hosts.")
+
+
+# static_graf = st.checkbox("Static Graf", value=True)
+st.caption("Если коннектов много, то отображение работает медленно и нужно использовать LR.")
 
 if select_folder != None:
     zeek_con = Path(f'{LOG_DIR}/{select_folder}/zeek/conn.log')
@@ -191,17 +221,37 @@ if select_folder != None:
             {'id.resp_p': list}).reset_index()
 
 
-    if static_graf:
+        rank = st.radio(
+            "направление графа",
+            ["TB", "LR"],
+            captions=[
+                "cверху в низ",
+                "слева на право"
+            ],
+        )
 
-        dot_tcp = graf(gr_tcp, "IPv4 TCP")
-        dot_udp = graf(gr_udp, "IPv4 UDP")
-        st.header("TCP")
-        st.html("<hr></hr>")
-        st.graphviz_chart(dot_tcp)
 
-        st.header("UDP")
-        st.html("<hr></hr>")
-        st.graphviz_chart(dot_udp)
+        dot_tcp = graf(gr_tcp, "IPv4 TCP", rank)
+        dot_udp = graf(gr_udp, "IPv4 UDP", rank)
 
-    else:
-        dinamic_graf()
+
+
+
+
+        with st.container(horizontal=True, wrap=False):
+             graph_download_buttons(dot_tcp, "TCP")
+             graph_download_buttons(dot_udp, "UDP")
+
+
+
+
+        if st.button("Отобразить TCP граф"):
+            st.header("TCP")
+            st.html("<hr></hr>")
+            st.graphviz_chart(dot_tcp)
+
+
+        if st.button("Отобразить UDP граф"):
+            st.header("UDP")
+            st.html("<hr></hr>")
+            st.graphviz_chart(dot_udp)
