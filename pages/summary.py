@@ -546,26 +546,26 @@ def http_files_post(folder_zeek):
         # Создаём DataFrame
         df_http_log = pd.DataFrame(data)
 
-        if "orig_fuids" not in df_http_log.columns: df_http_log["orig_fuids"] = None
-        # orig_fuids в http храниться  в виде списка. exlode его разворачивает и дропаем все orig_fuids в которых нету значений.
-        df_http_log = df_http_log.explode("orig_fuids").dropna(subset=["orig_fuids"])
-        # оставляем только нужные данные а http.logs .reindex это если не все поля присуствуют в логе
-        df_http_log = df_http_log.reindex(columns=http_cols)
-        # берём только HTTP из files.log и сразу отшибаем не нужные столбцы
-        df_files_http = df_files[df_files["source"] == "HTTP"].reindex(
-            columns=files_coils_http
-        )
+        if "orig_fuids"  in df_http_log.columns: #df_http_log["orig_fuids"] = None
+            # orig_fuids в http храниться  в виде списка. exlode его разворачивает и дропаем все orig_fuids в которых нету значений.
+            df_http_log = df_http_log.explode("orig_fuids").dropna(subset=["orig_fuids"])
+            # оставляем только нужные данные а http.logs .reindex это если не все поля присуствуют в логе
+            df_http_log = df_http_log.reindex(columns=http_cols)
+            # берём только HTTP из files.log и сразу отшибаем не нужные столбцы
+            df_files_http = df_files[df_files["source"] == "HTTP"].reindex(
+                columns=files_coils_http
+            )
 
-        # делаем join
-        result_df = df_http_log.merge(
-            df_files_http, left_on="orig_fuids", right_on="fuid", how="inner"
-        )
-        result_df.drop(columns=["orig_fuids"], inplace=True)
-        uniq_mime_type = result_df["orig_mime_types"].explode().unique()
-        st.badge(f"http Zeek POST: {len(result_df)}")
-        st.badge("http uniq mime types:", color="orange")
-        st.write("\n".join([f"•{mime} " for mime in uniq_mime_type]))
-        st.dataframe(result_df)
+            # делаем join
+            result_df = df_http_log.merge(
+                df_files_http, left_on="orig_fuids", right_on="fuid", how="inner"
+            )
+            result_df.drop(columns=["orig_fuids"], inplace=True)
+            uniq_mime_type = result_df["orig_mime_types"].explode().unique()
+            st.badge(f"http Zeek POST: {len(result_df)}")
+            st.badge("http uniq mime types:", color="orange")
+            st.write("\n".join([f"•{mime} " for mime in uniq_mime_type]))
+            st.dataframe(result_df)
 
 
 
