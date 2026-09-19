@@ -545,6 +545,8 @@ def http_files_post(folder_zeek):
             data = [json.loads(line.strip()) for line in f if line.strip()]
         # Создаём DataFrame
         df_http_log = pd.DataFrame(data)
+
+        if "orig_fuids" not in df_http_log.columns: df_http_log["orig_fuids"] = None
         # orig_fuids в http храниться  в виде списка. exlode его разворачивает и дропаем все orig_fuids в которых нету значений.
         df_http_log = df_http_log.explode("orig_fuids").dropna(subset=["orig_fuids"])
         # оставляем только нужные данные а http.logs .reindex это если не все поля присуствуют в логе
