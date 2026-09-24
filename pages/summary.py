@@ -205,16 +205,17 @@ def ndpi_log(file):
 def search_public_ip(ip_addrs):
     # Search public IP
     public_ip = []
-    for ip in ip_addrs:
-        w = ipaddress.ip_address(ip)
+    reader = geoip2.database.Reader("db/GeoLite2-City.mmdb")
+    try:
+        for ip in ip_addrs:
+            w = ipaddress.ip_address(ip)
 
-        if (
-            not w.is_private
-            and not w.is_link_local
-            and not w.is_multicast
-            and not w.is_loopback
-        ):
-            with geoip2.database.Reader("db/GeoLite2-City.mmdb") as reader:
+            if (
+                not w.is_private
+                and not w.is_link_local
+                and not w.is_multicast
+                and not w.is_loopback
+            ):
                 try:
                     response = reader.city(w)
                 except Exception as ex:
@@ -246,6 +247,8 @@ def search_public_ip(ip_addrs):
                         "registered_country": registered_country,
                     }
                 )
+    finally:
+        reader.close()
 
     df = pd.DataFrame(public_ip)
     if df.empty:
