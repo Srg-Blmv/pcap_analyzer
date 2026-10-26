@@ -58,17 +58,19 @@ docker exec suricata suricata-update
 
 # обновляем базы clamAV
 docker exec clamav freshclam
-
-
-
-
 ```
+
+
 Для загрузки файлова больше 210mb
 
 ``` 
 python ./bigfile_upload.py  ./sample.pcap 
 ```
 
+Перевисти ioc из jsonl в zeek
+```
+jsonl_to_intel-zeek.py
+```
 
 Добавил в nDPIreader протоколы:
 1) Fanuc Focas2

@@ -778,6 +778,7 @@ if select_folder != None:
     ndpi_json_session = ndpi_log(ndpi_json)
     if ndpi_json_session is not None:
         st.header("nDPI Risk sessions ")
+        st.badge(f"{len(ndpi_json_session)}")
         st.html("<hr></hr>")
         st.dataframe(ndpi_json_session)
 
