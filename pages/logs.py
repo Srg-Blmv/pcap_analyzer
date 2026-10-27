@@ -7,7 +7,7 @@ import geoip2.database
 import ipaddress
 import re
 from streamlit_echarts import st_echarts
-import plotly.express as px
+import duckdb
 
 LOG_DIR = Path("data")
 folder = os.listdir(LOG_DIR)
@@ -57,19 +57,45 @@ def suricata(file):
     return df, df_alert, severity_counts
 
 
+# def zeek(folder):
+#     # ZEEK
+#     result = []
+#     for file in folder.iterdir():
+#         if file.is_file():
+#             data = []
+#             with open(file) as f:
+#                 for line in f:
+#                     data.append(json.loads(line))
+#             df = pd.json_normalize(data)
+#
+#             result.append({"file_name": file.name, "df": df})
+#     return result
+
+def select_all_from_json(file):
+    query = f"""
+        SELECT
+        *
+        FROM read_json('{file}')
+    """
+    try:
+        df = duckdb.sql(query).df()
+        return df
+    except Exception as ex:
+        print(ex)
+        return None
+
+
 def zeek(folder):
     # ZEEK
     result = []
     for file in folder.iterdir():
         if file.is_file():
-            data = []
-            with open(file) as f:
-                for line in f:
-                    data.append(json.loads(line))
-            df = pd.json_normalize(data)
-
+            df = select_all_from_json(file)
             result.append({"file_name": file.name, "df": df})
     return result
+
+
+
 
 
 
