@@ -20,6 +20,7 @@ graphviz==0.21
 h11==0.16.0
 httptools==0.8.0
 idna==3.18
+ijson==3.6.0
 ipython==9.16.0
 ipython_pygments_lexers==1.1.1
 itsdangerous==2.2.0
